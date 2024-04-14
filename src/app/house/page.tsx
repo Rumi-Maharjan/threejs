@@ -2,7 +2,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-const Home: React.FC = () => {
+const Scene: React.FC = () => {
   return (
     <>
       <DynamicScene1 />
@@ -10,8 +10,8 @@ const Home: React.FC = () => {
   );
 };
 
-const DynamicScene1 = dynamic(() => import("@/components/house"), {
+const DynamicScene1 = dynamic(() => import("@/components/scene"), {
   ssr: false,
 });
 
-export default Home;
+export default Scene;
