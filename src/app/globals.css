@@ -105,3 +105,32 @@ a {
     color-scheme: dark;
   }
 }
+
+
+.apartment {
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tv {
+  position: absolute;
+  width: 55px;
+  right: 810px;
+  bottom: 520px;
+  height: 50px;
+  transform: skewY(30deg);
+}
+
+.fridge {
+  position: absolute;
+  width: 80px;
+  right: 770px;
+  bottom: 372px;
+  height: 128px;
+  transform: skewY(-30deg);
+}
