@@ -8,8 +8,8 @@ import {
   useLoader,
   useThree,
 } from "@react-three/fiber"; // Importing useLoader and useFrame
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Mesh } from "three";
 
 extend({ OrbitControls });

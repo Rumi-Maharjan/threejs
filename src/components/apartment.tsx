@@ -87,6 +87,36 @@ const Apartment: React.FC = () => {
                         top: `${containerHeight * 0.459}px`,
                     }}></div>
                 </Link>
+                <Link href="/store">
+                    <div className="laptop" style={{
+                        position: "absolute",
+                        left: `${containerWidth * 0.43}px`,
+                        top: `${containerHeight * 0.483}px`,
+                    }}></div>
+                </Link>
+                <div className="laptop-arrow" style={{
+                        position: "absolute",
+                        left: `${containerWidth * 0.441}px`,
+                        top: `${containerHeight * 0.425}px`,
+                    }}>
+                        <div className="bg-black text-white rounded-md text-sm p-1 -mb-3">Store</div>
+                        <img src="/arrow3.gif"/>
+                    </div>
+                <Link href="/album">
+                    <div className="book-shelf" style={{
+                        position: "absolute",
+                        left: `${containerWidth * 0.56}px`,
+                        top: `${containerHeight * 0.285}px`,
+                    }}></div>
+                </Link>
+                <div className="book-shelf-arrow" style={{
+                        position: "absolute",
+                        left: `${containerWidth * 0.565}px`,
+                        top: `${containerHeight * 0.23}px`,
+                    }}>
+                        <div className="bg-black text-white rounded-md text-sm p-1 -mb-3">Album</div>
+                        <img src="/arrow.gif"/>
+                    </div>
             </div>
         </div>
     );
