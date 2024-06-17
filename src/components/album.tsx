@@ -85,8 +85,6 @@ const Album: React.FC = () => {
                     ))}
                 </div>
             </div>
-
-            <div><Link className="block z-20 w-[11px] h-[11px]" style={{position:'absolute', left:'57.70758551520272%',top:'44.702315276195904%'}} href="/list"><span className="block p-4 md:p-0 absolute -top-4 -left-4 md:static  before:block before:bg-white before:rounded-full before:w-[11px] before:h-[11px] before:shadow-[0_0_10px_5px_#00000040]" style={{transform: 'scale(0.8) translateZ(0px)'}}></span><span className="block absolute bg-white/5 border border-white rounded-full pointer-events-none -top-[40px] -bottom-[40px] -left-[40px] -right-[40px]" style={{opacity: '0.802914', transform: 'scale(0.197086) translateZ(0px)'}}></span><div className="transition duration-150 ease-in-out block absolute top-full bg-white font-bold text-base py-2 px-4 rounded-full left-1/2 -translate-x-1/2  opacity-0 pointer-events-none" style={{ whiteSpace: 'nowrap', lineHeight: 1, boxShadow: '0 0 10px #00000040', transform: 'translateX(-50%) translateY(12px)' }}><span className="block absolute -top-1 left-1/2 -translate-x-1/2 z-10 rotate-45 w-2 h-2 bg-white rounded-[2px_0_0] shadow-[0_0_10px_#0000001a]"></span>October's Very Own</div></Link></div>
         </div>
     );
 };
