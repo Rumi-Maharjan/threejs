@@ -378,9 +378,9 @@ const List: React.FC = () => {
     const totalDurationMinutes = Math.floor(totalDurationSeconds / 60);
     const totalDurationHours = Math.floor(totalDurationMinutes / 60);
     const formattedTotalDuration = `${totalDurationHours}hr ${totalDurationMinutes % 60}min`;
-    console.log("Total Duration Seconds:", totalDurationSeconds);
-console.log("Total Duration Minutes:", totalDurationMinutes);
-console.log("Total Duration Hours:", totalDurationHours);
+    // console.log("Total Duration Seconds:", totalDurationSeconds);
+    // console.log("Total Duration Minutes:", totalDurationMinutes);
+    // console.log("Total Duration Hours:", totalDurationHours);
 
     return (
         <div className="min-h-[100vh] list-bg text-white">
@@ -440,7 +440,7 @@ console.log("Total Duration Hours:", totalDurationHours);
                         <div key={index} className={`flex text-sm text-gray-300 py-2 px-4 items-center cursor-pointer hover:bg-white hover:bg-opacity-5 ${currentSong === index && isPlaying ? "" : ""}`} onClick={() => handlePlayPause(index, song.filePath)}>
                             <div className="min-w-[3%] text-center">
                                 {currentSong === index && isPlaying ? (
-                                    <img src="/a.gif" className="w-11 h-11" alt="Playing" />
+                                    <img src="/a.gif" className="w-11 h-11"/>
                                 ) : (
                                     <>{index + 1}</>
                                 )}
@@ -448,11 +448,11 @@ console.log("Total Duration Hours:", totalDurationHours);
                             <div className="min-w-[48%] flex gap-3 items-center">
                                 <img src={song.picture} className="w-11 h-11 object-cover rounded-md" />
                                 <div>
-                                    <div className="text-white">{song.title}</div>
+                                    <div className="text-white line-clamp-2">{song.title}</div>
                                     <div className="text-xs">{song.artist}</div>
                                 </div>
                             </div>
-                            <div className="min-w-[42%]">{song.album}</div>
+                            <div className="min-w-[42%] line-clamp-2">{song.album}</div>
                             <div className="min-w-[7%] flex justify-center">{song.duration}</div>
                         </div>
                     ))}

@@ -1,17 +1,13 @@
-
 import React from "react";
-import dynamic from "next/dynamic";
+import Test from "@/components/homepage";
 
 const Home: React.FC = () => {
-  return (
-    <>
-      <DynamicScene1 />
-    </>
-  );
+    return (
+        <>
+            <Test/>
+        </>
+    );
 };
 
-const DynamicScene1 = dynamic(() => import("@/components/house"), {
-  ssr: false,
-});
 
 export default Home;

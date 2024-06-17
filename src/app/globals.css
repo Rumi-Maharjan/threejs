@@ -89,7 +89,7 @@ body {
 
 .list-bg {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #FC8EAC, black 60%, #000 40%);
+  background: linear-gradient(to bottom, #FC8EAC, black 40%, #000 60%);
 }
 
 .box-shadow {
@@ -122,4 +122,68 @@ body {
   right: 770px;
   bottom: 372px;
   height: 60px;
+}
+
+
+.img-bg {
+  background-color: #0f0f0f;
+}
+
+.link1{
+  transform: skewY(-30deg);
+}
+
+.link1-img{
+  transform: skewY(30deg);
+}
+
+.animated-dot {
+  fill: white;
+  transform-origin: center;
+}
+
+.dot-wrapper {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  transform: translate(-50%, -50%);
+}
+
+.dot {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid white;
+  transform: translate(-50%, -50%);
+  animation: ring-pulsate 1.5s infinite;
+}
+
+@keyframes ring-pulsate {
+  0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+  }
+  100% {
+      transform: translate(-50%, -50%) scale(4);
+      opacity: 0;
+  }
+}
+
+.background-gradient {
+  background: linear-gradient(to bottom, #d8b4e2, #f47575);
+  height: 100vh;
+  width: 100%;
 }

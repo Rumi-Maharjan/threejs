@@ -1,8 +1,7 @@
-
 import React from "react";
 import dynamic from "next/dynamic";
 
-const Scene: React.FC = () => {
+const House: React.FC = () => {
   return (
     <>
       <DynamicScene1 />
@@ -10,8 +9,8 @@ const Scene: React.FC = () => {
   );
 };
 
-const DynamicScene1 = dynamic(() => import("@/components/scene"), {
+const DynamicScene1 = dynamic(() => import("@/components/house"), {
   ssr: false,
 });
 
-export default Scene;
+export default House;
