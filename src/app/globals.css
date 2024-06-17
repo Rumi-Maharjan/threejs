@@ -184,6 +184,6 @@ body {
 
 .background-gradient {
     background: linear-gradient(to bottom, #d8b4e2, #f47575);
-    height: 100vh; /* Example height, adjust as needed */
-    width: 100%; /* Example width, adjust as needed */
+    height: 100vh;
+    width: 100%;
 }
