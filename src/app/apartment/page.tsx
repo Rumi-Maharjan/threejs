@@ -1,10 +1,11 @@
 import React from "react";
-import Apartment from "@/components/apartment";
+// import Apartment from "@/components/apartment";
+import HomePage from "@/components/homepage";
 
 const ApartmentPage: React.FC = () => {
     return (
         <>
-        <Apartment/>
+        <HomePage/>
         </>
     );
 };

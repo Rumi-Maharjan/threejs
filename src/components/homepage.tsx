@@ -51,6 +51,7 @@ const HomePage: React.FC = () => {
                 computerBg.setAttributeNS(null, "height", "20");
                 computerBg.setAttributeNS(null, "rx", "5");
                 computerBg.setAttributeNS(null, "fill", "white");
+                computerBg.style.visibility = "hidden";
 
                 const computerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 computerText.setAttributeNS(null, "x", "650");
@@ -59,6 +60,7 @@ const HomePage: React.FC = () => {
                 computerText.setAttributeNS(null, "font-size", "12px");
                 computerText.setAttributeNS(null, "text-anchor", "middle");
                 computerText.setAttributeNS(null, "dominant-baseline", "middle");
+                computerText.style.visibility = "hidden";
                 computerText.textContent = "Store";
 
                 const svg = document.querySelector("svg"); 
@@ -102,6 +104,7 @@ const HomePage: React.FC = () => {
                 cdBg.setAttributeNS(null, "height", "20");
                 cdBg.setAttributeNS(null, "rx", "5");
                 cdBg.setAttributeNS(null, "fill", "white");
+                cdBg.style.visibility = "hidden";
 
                 const cdText = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 cdText.setAttributeNS(null, "x", "660");
@@ -110,6 +113,7 @@ const HomePage: React.FC = () => {
                 cdText.setAttributeNS(null, "font-size", "12px");
                 cdText.setAttributeNS(null, "text-anchor", "middle");
                 cdText.setAttributeNS(null, "dominant-baseline", "middle");
+                cdText.style.visibility = "hidden";
                 cdText.textContent = "Album";
 
                 const svg = document.querySelector("svg"); 
