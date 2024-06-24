@@ -1,13 +1,14 @@
 import React from "react";
-import Store from "@/components/store";
+import Gallery from "@/components/gallery";
 import MasterLayout from "@/components/MasterLayout/Masterlayout";
 
-const StorePage : React.FC = () => {
+const GalleryPage: React.FC = () => {
     return (
         <MasterLayout>
-            <Store/>
+            <Gallery/>
         </MasterLayout>
     );
 };
 
-export default StorePage;
+
+export default GalleryPage;

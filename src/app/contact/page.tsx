@@ -1,13 +1,13 @@
 import React from "react";
-import Store from "@/components/store";
+import Contact from "@/components/contact";
 import MasterLayout from "@/components/MasterLayout/Masterlayout";
 
-const StorePage : React.FC = () => {
+const ContactPage: React.FC = () => {
     return (
         <MasterLayout>
-            <Store/>
+            <Contact/>
         </MasterLayout>
     );
 };
 
-export default StorePage;
+export default ContactPage;

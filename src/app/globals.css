@@ -144,15 +144,19 @@ body {
 
 .dot-wrapper {
   position: absolute;
-  width: 15px;
-  height: 15px;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
   transform: translate(-50%, -50%);
 }
 
 .dot {
   position: absolute;
-  width: 11px;
-  height: 11px;
+  top: 0;
+  left: 0;
+  width: 10px; /* Adjusted to match the .dot-wrapper size */
+  height: 10px; /* Adjusted to match the .dot-wrapper size */
   background-color: white;
   border-radius: 50%;
 }
@@ -162,13 +166,14 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 11px;
-  height: 11px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background-color: transparent;
-  border: 1px solid white;
+  box-shadow: 0 0 0 0.5px white;
   transform: translate(-50%, -50%);
   animation: ring-pulsate 1.5s infinite;
+  box-sizing: border-box;
 }
 
 @keyframes ring-pulsate {
@@ -186,4 +191,141 @@ body {
     background: linear-gradient(to bottom, #d8b4e2, #f47575);
     height: 100vh;
     width: 100%;
+}
+
+.loading-screen {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.loaded-screen {
+  opacity: 0;
+  pointer-events: none; /* Ensure the screen is not clickable during fade out */
+  transition: opacity 0.5s ease-in-out;
+}
+
+.enlargedContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.enlarged {
+  opacity: 1;
+  visibility: visible;
+}
+
+.enlargedInner {
+  transition: transform 0.3s ease-in-out;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.enlarged img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.imageThumbnail {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.imageHover {
+  transform: scale(1.1);
+}
+
+.zoomIcon {
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.detailsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0; /* Replace with your desired background color */
+}
+
+.enlargedImageContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.enlargedImageContainer.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.enlargedImage {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.list-page {
+  position: fixed;
+  bottom: -100%; /* Start off-screen */
+  left: 0;
+  right: 0;
+  transition: bottom 0.5s ease-in-out; /* Smooth sliding animation */
+  background-color: white; /* Adjust background color as needed */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.list-page.visible {
+  bottom: 0; /* Slide up to reveal */
+}
+
+.split_vertical {
+  animation: verticalAnimation 1s forwards;
+}
+
+@keyframes verticalAnimation {
+  0% {
+      /* Initial state of the transition */
+      transform: scaleY(0);
+  }
+  100% {
+      /* Final state of the transition */
+      transform: scaleY(1);
+  }
 }

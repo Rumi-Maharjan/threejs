@@ -1,10 +1,14 @@
+// Details.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiUser, FiZoomIn, FiX } from "react-icons/fi";
 import { IoFolderOpenOutline } from "react-icons/io5";
 import Link from "next/link";
 import { RxUpload } from "react-icons/rx";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 
 const images = [
     { image: "/Picture.png" },
@@ -22,9 +26,18 @@ const items = [
 ];
 
 const Details: React.FC = () => {
+    const searchParams = useSearchParams();
+    const imageParam = searchParams.get('image');
+    const [mainImage, setMainImage] = useState<string | null>(imageParam || null);
     const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
+
+    useEffect(() => {
+        if (imageParam) {
+            setMainImage(imageParam);
+        }
+    }, [imageParam]);
 
     const openEnlargedView = (image: string) => {
         setEnlargedImage(image);
@@ -44,29 +57,16 @@ const Details: React.FC = () => {
 
     return (
         <div className="store-bg">
-            <div className="flex w-[80%] mx-auto justify-between items-center py-5">
-                <div className="text-5xl font-semibold">Hello</div>
-                <div className="flex gap-3 text-3xl">
-                    <FiUser />
-                    <IoFolderOpenOutline />
-                </div>
-            </div>
-
-            <div className="w-full bg-black mb-20">
-                <div className="w-[80%] mx-auto py-3 flex gap-7 text-sm font-serif text-stone-300 font-semibold">
-                    <div>Home</div>
-                    <div>Real Good Shit</div>
-                    <div>Apparel</div>
-                    <div>Prints</div>
-                    <div>Music</div>
-                    <div>Accessories</div>
-                </div>
-            </div>
-
             <div className="w-[80%] mx-auto flex gap-20">
                 <div>
-                    <div className="relative" onClick={() => openEnlargedView("/moon.jpg")}>
-                        <img src="/moon.jpg" className="w-[33vw] h-[37vw] object-cover cursor-pointer"
+                    <motion.div
+                        layoutId={mainImage || "mainImage"}
+                        className="relative"
+                        onClick={() => openEnlargedView(mainImage || "/moon.jpg")}
+                    >
+                        <motion.img
+                            src={mainImage || "/moon.jpg"}
+                            className="w-[33vw] h-[37vw] object-cover cursor-pointer"
                             onMouseEnter={() => setHoverIndex(0)}
                             onMouseLeave={() => setHoverIndex(null)}
                         />
@@ -75,11 +75,17 @@ const Details: React.FC = () => {
                             <FiZoomIn className="text-sm" />
                         </div>
                     )}
-                    </div>
+                    </motion.div>
                     <div className="w-[33vw] mt-3 grid grid-cols-2 gap-3">
                         {images.map((image, index) => (
-                            <div key={index} className="relative" onClick={() => openEnlargedView(image.image)}>
-                                <img src={image.image} className="w-[16.5vw] h-[20vw] object-cover cursor-pointer"
+                            <div
+                                key={index}
+                                className="relative"
+                                onClick={() => openEnlargedView(image.image)}
+                            >
+                                <img
+                                    src={image.image}
+                                    className="w-[16.5vw] h-[20vw] object-cover cursor-pointer"
                                     onMouseEnter={() => setHoverIndex(index + 1)}
                                     onMouseLeave={() => setHoverIndex(null)}
                                 />
@@ -144,25 +150,25 @@ const Details: React.FC = () => {
             <div className="w-[80%] mx-auto mt-14 mb-20 z-0">
                 <div className="text-4xl mb-7">You may also like</div>
                 <div className="flex grid grid-cols-4 gap-11">
-                    {items.map((items, index) => (
-                        <div key={index} className="mb-11 cursor-pointer">
-                            <Link href="/store/details">
+                    {items.map((item, index) => (
+                        <motion.div
+                            key={index}
+                            className="mb-11 cursor-pointer"
+                        >
+                            <Link href={`/store/details?image=${encodeURIComponent(item.image)}`}>
                                 <div className="w-full h-[20vw] overflow-hidden">
-                                    <img src={items.image} className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-105" />
+                                    <motion.img
+                                        src={item.image}
+                                        className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-105"
+                                    />
                                 </div>
                                 <div className="pt-4">
-                                    <div className="text-xl mb-1">{items.name}</div>
-                                    <div>{items.price}</div>
+                                    <div className="text-xl mb-1">{item.name}</div>
+                                    <div>{item.price}</div>
                                 </div>
                             </Link>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
-            </div>
-
-            <div className="bg-black py-11">
-                <div className="w-[80%] mx-auto h-40 text-white">
-                    Footer
                 </div>
             </div>
         </div>

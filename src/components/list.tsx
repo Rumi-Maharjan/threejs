@@ -23,192 +23,6 @@ interface Song {
 
 const List: React.FC = () => {
 
-    // const [songs, setSongs] = useState<Song[]>([
-    //     {
-    //         title: "In My Head",
-    //         album: "Peter Manos",
-    //         artist: "Peter Manos",
-    //         duration: "04:23",
-    //         picture: "/moon.jpg",
-    //         filePath: "/Peter Manos - In My Head.mp3"
-    //     },
-    //     {
-    //         title: "Trouble I'm in",
-    //         album: "Twinbed",
-    //         artist: "Twinbed",
-    //         duration: "03:45",
-    //         picture: "/Picture.png",
-    //         filePath: "/Twinbed - Trouble I'm in (Lyrics).m4a"
-    //     },
-    //     {
-    //         title: "I Love You So",
-    //         album: "The Walters -- I Love You So",
-    //         artist: "The Walters",
-    //         duration: "04:23",
-    //         picture: "/cyro.png",
-    //         filePath: "/The Walters -- I Love You So.m4a"
-    //     },
-    //     {
-    //         title: "Say My Name-Cry Me A River",
-    //         album: "The Neighbourhood",
-    //         artist: "The Neighbourhood",
-    //         duration: "03:45",
-    //         picture: "/owl planter.jpg",
-    //         filePath: "/The Neighbourhood - Say My Name-Cry Me A River.m4a"
-    //     },
-    //     {
-    //         title: "Sweater Weather",
-    //         album: "Sweater Weather",
-    //         artist: "Sweater Weather",
-    //         duration: "04:23",
-    //         picture: "/slider1.jpg",
-    //         filePath: "/Sweater Weather.m4a"
-    //     },
-    //     {
-    //         title: "Shinunoga E-Wa",
-    //         album: "Fuji Kaje",
-    //         artist: "Fuji Kaje",
-    //         duration: "03:45",
-    //         picture: "/4357971.jpg",
-    //         filePath: "/Shinunoga E-Wa.m4a"
-    //     },
-    //     {
-    //         title: "Overdose",
-    //         album: "なとり",
-    //         artist: "なとり",
-    //         duration: "04:23",
-    //         picture: "/cat3.jpg",
-    //         filePath: "/なとり - Overdose.m4a"
-    //     },
-    //     {
-    //         title: "YELLOW",
-    //         album: "神山羊",
-    //         artist: "Yoh Kamiyama",
-    //         duration: "03:45",
-    //         picture: "/cow planter.jpg",
-    //         filePath: "/神山羊 - YELLOW【Music Video】- Yoh Kamiyama - YELLOW.m4a"
-    //     },
-    //     {
-    //         title: "The Night We Met",
-    //         album: "Lord Huron",
-    //         artist: "Lord Huron",
-    //         duration: "04:23",
-    //         picture: "/nordic style candle holder.webp",
-    //         filePath: "/Lord Huron - The Night We Met (Official Audio).m4a"
-    //     },
-    //     {
-    //         title: "Summertime Sadness",
-    //         album: "Lana Del Rey",
-    //         artist: "Lana Del Rey",
-    //         duration: "03:45",
-    //         picture: "/Picture.png",
-    //         filePath: "/Lana Del Rey - Summertime Sadness (Official Music Video).m4a"
-    //     },
-    //     {
-    //         title: "Say Yes To Heaven",
-    //         album: "Lana Del Rey",
-    //         artist: "Lana Del Rey",
-    //         duration: "03:45",
-    //         picture: "/cyro.png",
-    //         filePath: "/Lana Del Rey - Say Yes To Heaven (Official Audio).m4a"
-    //     },
-    //     {
-    //         title: "Doin Time",
-    //         album: "Lana Del Rey",
-    //         artist: "Lana Del Rey",
-    //         duration: "03:45",
-    //         picture: "/Pot and candles.jpg",
-    //         filePath: "/Lana Del Rey - Doin Time (Official Audio).m4a"
-    //     },
-    //     {
-    //         title: "golden hour (Fujii Kaze Remix)",
-    //         album: "JVKE",
-    //         artist: "JVKE",
-    //         duration: "03:45",
-    //         picture: "/owl planter.jpg",
-    //         filePath: "/JVKE - golden hour (Fujii Kaze Remix).m4a"
-    //     },
-    //     {
-    //         title: "Kaikai Kitan",
-    //         album: "Jujutsu Kaisen - Opening 1",
-    //         artist: "Eve",
-    //         duration: "03:45",
-    //         picture: "/Picture.png",
-    //         filePath: "/Jujutsu Kaisen - Opening 1 Full『Kaikai Kitan』by Eve (Lyrics KAN-ROM-ENG).m4a"
-    //     },
-    //     {
-    //         title: "I've got my eye on you",
-    //         album: "Album B",
-    //         artist: "Artist",
-    //         duration: "03:45",
-    //         picture: "/slider1.jpg",
-    //         filePath: "/I've got my eye on you..m4a"
-    //     },
-    //     {
-    //         title: "Take Me To Church",
-    //         album: "Hozier",
-    //         artist: "Hozier",
-    //         duration: "03:45",
-    //         picture: "/moon.jpg",
-    //         filePath: "/Hozier - Take Me To Church.m4a"
-    //     },
-    //     {
-    //         title: "Matsuri",
-    //         album: "Fujii Kaze",
-    //         artist: "Fujii Kaze",
-    //         duration: "03:45",
-    //         picture: "/4357971.jpg",
-    //         filePath: "/Fujii Kaze -  Matsuri (Official Video).m4a"
-    //     },
-    //     {
-    //         title: "Daylight",
-    //         album: "David Kushner",
-    //         artist: "David Kushner",
-    //         duration: "03:45",
-    //         picture: "/cat3.jpg",
-    //         filePath: "/David Kushner - Daylight (Official Music Video).m4a"
-    //     },
-    //     {
-    //         title: "idontwannabeyouanymore",
-    //         album: "Billie Eilish",
-    //         artist: "Billie Eilish",
-    //         duration: "03:45",
-    //         picture: "/cow planter.jpg",
-    //         filePath: "/Billie Eilish - idontwannabeyouanymore.m4a"
-    //     },
-    //     {
-    //         title: "Skinny Love",
-    //         album: "Birdy",
-    //         artist: "Birdy",
-    //         duration: "03:45",
-    //         picture: "/cyro.png",
-    //         filePath: "/Birdy - Skinny Love.m4a"
-    //     },
-    //     {
-    //         title: "I Found",
-    //         album: "Amber Run",
-    //         artist: "Amber Run",
-    //         duration: "03:45",
-    //         picture: "/nordic style candle holder.webp",
-    //         filePath: "/Amber Run - I Found.m4a"
-    //     },
-    //     {
-    //         title: "ALL NIGHT",
-    //         album: "THE VAMPS",
-    //         artist: "THE VAMPS",
-    //         duration: "03:45",
-    //         picture: "/owl planter.jpg",
-    //         filePath: "/ALL NIGHT - THE VAMPS.m4a"
-    //     },
-    //     {
-    //         title: "“SPY x FAMILY” part2 Ending theme song",
-    //         album: "SPY x FAMILY",
-    //         artist: "ノンクレジット",
-    //         duration: "03:45",
-    //         picture: "/slider1.jpg",
-    //         filePath: "/『SPY×FAMILY』第2クールエンディング主題歌アニメ映像（ノンクレジット）／“SPY x FAMILY” part2 Ending theme song .m4a"
-    //     },
-    // ]);
 
     const [currentSong, setCurrentSong] = useState<number | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -217,6 +31,7 @@ const List: React.FC = () => {
     const [shuffledOrder, setShuffledOrder] = useState<number[]>([]);
     const [isShuffle, setIsShuffle] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
+    const [showTransition, setShowTransition] = useState(false);
 
     const loadSongs = async () => {
         const songFiles = [
@@ -293,6 +108,7 @@ const List: React.FC = () => {
 
     useEffect(() => {
         loadSongs();
+        setShowTransition(true);
     }, []);
 
     useEffect(() => {
@@ -383,7 +199,7 @@ const List: React.FC = () => {
     // console.log("Total Duration Hours:", totalDurationHours);
 
     return (
-        <div className="min-h-[100vh] list-bg text-white">
+        <div className={`min-h-[100vh] list-bg text-white ${showTransition ? 'split_vertical' : ''}`}>
             <div className="text-white flex justify-between text-3xl mb-3 pt-7 px-7">
                 <div className="flex gap-5 arrow">
                     <IoChevronBackOutline className="rounded-full p-1 bg-black bg-opacity-30 direction" />
