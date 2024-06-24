@@ -329,3 +329,14 @@ body {
       transform: scaleY(1);
   }
 }
+
+.custom-input {
+  outline: none;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fcfdf9;
+}
+
+.custom-input::placeholder {
+  color: #9b9999;
+  font-size: 14px;
+}
