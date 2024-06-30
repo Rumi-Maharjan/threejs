@@ -1,14 +1,13 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
 
 const InitialTransition: React.FC = () => {
-    const [isAnimate, setAnimate] = useState(false);
     const blackBox = {
         initial: {
-            height: "125vh",
-            top: 0,
+            height: "100vh",
+            bottom: 0,
         },
         animate: {
             height: 0,
@@ -33,18 +32,18 @@ const InitialTransition: React.FC = () => {
         },
     };
 
-    // const text = {
-    //     initial: {
-    //         y: 40,
-    //     },
-    //     animate: {
-    //         y: 80,
-    //         transition: {
-    //             duration: 1.5,
-    //             ease: [0.87, 0, 0.13, 1],
-    //         },
-    //     },
-    // };
+    const text = {
+        initial: {
+            y: 40,
+        },
+        animate: {
+            y: 80,
+            transition: {
+                duration: 1.5,
+                ease: [0.87, 0, 0.13, 1],
+            },
+        },
+    };
 
     const handleAnimationComplete = () => {
         const element = document.getElementById('initial-transition');
@@ -53,21 +52,16 @@ const InitialTransition: React.FC = () => {
         }
     };
 
-    const handleClick = () => {
-        setAnimate(true);
-    };
-
-
     return (
             <motion.div
-                className={`absolute z-50 flex items-center justify-center w-full bg-white wave`}
+                className="absolute z-50 flex items-center justify-center w-full bg-black"
                 initial="initial"
                 id="initial-transition"
-                animate={isAnimate ? "animate" : ""}
+                animate="animate"
                 variants={blackBox}
                 onAnimationComplete={handleAnimationComplete}
             >
-                {/* <motion.svg variants={textContainer} className="absolute z-50 flex">
+                <motion.svg variants={textContainer} className="absolute z-50 flex">
                     <pattern
                         id="pattern"
                         patternUnits="userSpaceOnUse"
@@ -76,7 +70,7 @@ const InitialTransition: React.FC = () => {
                         className="text-white"
                     >
                         <rect className="w-full h-full fill-current" />
-                        <rect className="w-full h-full text-gray-600 fill-current" />
+                        <motion.rect variants={text} className="w-full h-full text-gray-600 fill-current" />
                     </pattern>
                     <text
                         className="text-4xl font-bold"
@@ -84,14 +78,10 @@ const InitialTransition: React.FC = () => {
                         x="50%"
                         y="50%"
                         style={{ fill: "url(#pattern)" }}
-                        onClick={handleClick}
                     >
                         PROHDEEN
                     </text>
-                </motion.svg> */}
-                <motion.div variants={textContainer}>
-                    <img src="/prohdeen.jpg" onClick={handleClick}/>
-                </motion.div>
+                </motion.svg>
             </motion.div>
     );
 };
