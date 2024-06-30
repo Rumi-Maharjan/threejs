@@ -5,10 +5,12 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useRouter } from 'next/navigation';
 import { motion } from "framer-motion";
 import InitialTransition from "./initialtransition";
+import Explore from "./explore";
 
 const HomePage: React.FC = () => {
     const router = useRouter();
     const [svgContent, setSvgContent] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         fetch('/Homepage-01.svg')
@@ -118,9 +120,11 @@ const HomePage: React.FC = () => {
                     <div className="relative h-[100vh] w-[100vw] flex items-center justify-center">
                         {svgContent && <div dangerouslySetInnerHTML={{ __html: svgContent }} className="w-[80vw]" />}
                     </div>
-                    
                 </TransformComponent>
             </TransformWrapper>
+            <div className="text-white absolute bottom-10 left-10">
+                <Explore />
+            </div>
         </div>
     );
 };

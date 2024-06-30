@@ -3,7 +3,7 @@
 import React from "react";
 import { FaPhone } from "react-icons/fa6";
 import { HiMail } from "react-icons/hi";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form";
 
 interface IFormInput {
     name: string

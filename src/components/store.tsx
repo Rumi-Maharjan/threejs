@@ -21,7 +21,7 @@ const items = [
 
 const Store: React.FC = () => {
     return (
-        <div className="store-bg">
+        <div className="store-bg pt-10">
             <div className="flex flex-wrap px-11 justify-between mb-40">
                 {items.map((item, index) => (
                     <div key={index} className="mb-11 cursor-pointer">

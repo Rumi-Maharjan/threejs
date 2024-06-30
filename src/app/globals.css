@@ -155,8 +155,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 10px; /* Adjusted to match the .dot-wrapper size */
-  height: 10px; /* Adjusted to match the .dot-wrapper size */
+  width: 10px;
+  height: 10px;
   background-color: white;
   border-radius: 50%;
 }
@@ -200,7 +200,7 @@ body {
 
 .loaded-screen {
   opacity: 0;
-  pointer-events: none; /* Ensure the screen is not clickable during fade out */
+  pointer-events: none;
   transition: opacity 0.5s ease-in-out;
 }
 
@@ -303,12 +303,12 @@ body {
 
 .list-page {
   position: fixed;
-  bottom: -100%; /* Start off-screen */
+  bottom: -100%; 
   left: 0;
   right: 0;
-  transition: bottom 0.5s ease-in-out; /* Smooth sliding animation */
-  background-color: white; /* Adjust background color as needed */
-  z-index: 1000; /* Ensure it's above other content */
+  transition: bottom 0.5s ease-in-out; 
+  background-color: white;
+  z-index: 1000;
 }
 
 .list-page.visible {
@@ -321,11 +321,9 @@ body {
 
 @keyframes verticalAnimation {
   0% {
-      /* Initial state of the transition */
       transform: scaleY(0);
   }
   100% {
-      /* Final state of the transition */
       transform: scaleY(1);
   }
 }
@@ -339,4 +337,62 @@ body {
 .custom-input::placeholder {
   color: #9b9999;
   font-size: 14px;
+}
+
+.explore-bg {
+  background-color: rgba(15, 15, 15, 0.5);
+}
+
+.explore li {
+  list-style: none;
+}
+
+.wave {
+  --size: 100px;
+  --m: 0.5;
+  --p: calc(var(--m)*var(--size));
+  --R: calc(var(--size)*sqrt(var(--m)*var(--m) + 1));
+
+  mask:
+    radial-gradient(var(--R) at 50% calc(100% - (var(--size) + var(--p))), #000 99%, #0000 101%)
+      calc(50% - 2 * var(--size)) 0/calc(4 * var(--size)) 100%,
+    radial-gradient(var(--R) at 50% calc(100% + var(--p)), #0000 99%, #000 101%) 
+      50% calc(100% - var(--size)) / calc(4 * var(--size)) 100% repeat-x;
+  /* background: linear-gradient(90deg,red,blue); */
+  /* height: 100vh; */
+}
+
+.bg-animate {
+  background: linear-gradient(to bottom, #d0afca, #f97066 90%, #f97066 10%);
+}
+
+@media (min-width: 1200px) {
+  .container {
+      max-width: 1200px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 400px;
+}
+
+.input-form input, 
+.input-form select, 
+.input-form textarea {
+  border: 1px solid rgb(151, 151, 151);
+  border-radius: 7px;
+  padding: 7px;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-form label {
+  color: #747272;
 }

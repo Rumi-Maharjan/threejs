@@ -14,6 +14,7 @@
     "framer-motion": "^11.2.11",
     "music-metadata-browser": "^2.5.10",
     "next": "14.2.3",
+    "primereact": "^10.6.6",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.0",

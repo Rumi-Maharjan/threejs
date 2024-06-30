@@ -58,7 +58,7 @@ const Details: React.FC = () => {
     return (
         <div className="store-bg">
             <div className="w-[80%] mx-auto flex gap-20">
-                <div>
+                <div className="pt-10">
                     <motion.div
                         layoutId={mainImage || "mainImage"}
                         className="relative"
@@ -99,7 +99,7 @@ const Details: React.FC = () => {
                     </div>
                 </div>
 
-                <div>
+                <div className="h-fit pt-10 sticky top-0">
                     <div className="text-5xl w-96 mb-3">Real Good Shit Hoodie</div>
                     <div>£65.00 GBP</div>
                     <div className="my-5">
