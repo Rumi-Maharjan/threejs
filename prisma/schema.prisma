@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Sizes {
+  SMALL
+  MEDIUM
+  LARGE
+  EXTRA_LARGE
+  DOUBLE_EXTRA_LARGE
+  TRIPLE_EXTRA_LARGE
+}
+
+enum Color {
+  RED
+  GREEN
+  BLUE
+  PURPLE
+  ORANGE
+  GREY
+  BLACK
+  YELLOW
+}
+
+model Album {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @db.VarChar(255)
+  price     Float
+  track_no  Int
+  ratings   Float
+  genreId   Int?
+  genre     Genre?   @relation(fields: [genreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  songs     Song[]   @relation("AlbumSongs")
+  images    Image[]
+}
+
+model Collaborators {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(255)
+  songs Song   @relation(references: [id], fields: [songId])
+
+  songId           Int
+  SongCollaborator SongCollaborator[]
+}
+
+model Genre {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique @db.VarChar(255)
+  albums Album[]
+  Song   Song[]
+}
+
+model Image {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  url       String?
+  album     Album?      @relation(fields: [albumId], references: [id])
+  albumId   Int?
+  about     About?      @relation(fields: [aboutId], references: [id])
+  aboutId   Int?
+  song      Song?       @relation(fields: [songId], references: [id])
+  songId    Int?        @unique
+  blog      Blog?       @relation(fields: [blogId], references: [id])
+  blogId    Int?
+  item      Store_Item? @relation(fields: [itemId], references: [id])
+  itemId    Int?
+}
+
+model Song {
+  id               Int                @id @default(autoincrement())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  title            String             @db.VarChar(255)
+  length           String             @db.VarChar(255)
+  ratings          Float
+  genreId          Int?
+  albumId          Int?
+  collaborators    Collaborators[]
+  album            Album?             @relation("AlbumSongs", fields: [albumId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  genre            Genre?             @relation(fields: [genreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  images           Image?
+  SongCollaborator SongCollaborator[]
+}
+
+model SongCollaborator {
+  songId         Int
+  collaboratorId Int
+  song           Song          @relation(fields: [songId], references: [id])
+  collaborator   Collaborators @relation(fields: [collaboratorId], references: [id])
+
+  @@id([songId, collaboratorId])
+}
+
+model About {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  images      Image[]
+}
+
+model Blog {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String   @db.Text
+  author    String   @db.VarChar(255)
+  images    Image[]
+}
+
+model Inquiry {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  message   String   @db.Text
+  subject   String   @db.Text
+  title     String   @db.VarChar(255)
+}
+
+model Store_Category {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  name        String       @db.VarChar(255)
+  description String       @db.Text
+  storeItem   Store_Item[]
+}
+
+model Store_Item {
+  id            Int            @id @default(autoincrement())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  name          String         @db.VarChar(255)
+  description   String         @db.Text
+  price         Float
+  size         Sizes[]
+  color        Color[]
+  quantity      Int
+  category_id   Int
+  status        Boolean?       @default(true)
+  images        Image[]
+  storeCategory Store_Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Gallery {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  title       String     @db.VarChar(255)
+  caption     String?    @db.VarChar(255)
+  images      String
+  category    GCategory? @relation(fields: [category_id], references: [id])
+  category_id Int?
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @db.VarChar(255)
+  email     String   @unique
+  password  String   @db.VarChar(255)
+}
+
+model Video {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @db.VarChar(255)
+  link      String   @db.VarChar(255)
+}
+
+model GCategory {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String
+  cover       String?
+  description String?
+  images      Gallery[]
+}
