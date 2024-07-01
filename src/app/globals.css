@@ -396,3 +396,13 @@ body {
 .input-form label {
   color: #747272;
 }
+
+.input-form .image {
+  border: 1px solid rgb(151, 151, 151);
+  border-radius: 7px;
+}
+
+.input-form label {
+  padding-left: 7px;
+  /* font-size: 16px; */
+}

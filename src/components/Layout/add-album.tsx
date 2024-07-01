@@ -3,26 +3,36 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { IoCloseCircle } from "react-icons/io5";
 
 interface IFormInput {
     name: string;
     art: string;
     price: number;
     genre: string;
-    collaborators: string[];
     track_no: number;
     ratings: number;
 }
 
 const AddAlbum: React.FC = () => {
     const [isEditMode, setEditMode] = useState(false);
-    const [collaborators, setCollaborators] = useState<string[]>([""]);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const router = useRouter();
 
     const { register, handleSubmit } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        data.collaborators = collaborators;
+        if (data.art && data.art[0]) {
+            const file = data.art[0];
+            data.art = file;
+        }
         console.log(data);
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImagePreview(URL.createObjectURL(file));
+        }
     };
 
     const title = isEditMode ? "Edit Album" : "Add Album";
@@ -40,16 +50,6 @@ const AddAlbum: React.FC = () => {
         { id: 10, name: "Genre10" },
         { id: 11, name: "Genre11" },
     ];
-
-    const addCollaborator = () => {
-        setCollaborators([...collaborators, ""]);
-    };
-
-    const handleCollaboratorChange = (index: number, value: string) => {
-        const newCollaborators = collaborators.slice();
-        newCollaborators[index] = value;
-        setCollaborators(newCollaborators);
-    };
 
     return (
         <div className="pl-8">
@@ -81,14 +81,27 @@ const AddAlbum: React.FC = () => {
                 <div className="flex gap-7">
                     <div className="field ">
                         <label htmlFor="art">Image</label>
-                        <input
-                            type="file"
-                            {...register("art")}
-                            accept="image/*"
-                            placeholder=""
-                            className="h-full"
-                            required
-                        />
+                        {imagePreview ? (
+                            <div className="image h-48 relative">
+                                <img src={imagePreview} alt="Image Preview" className="w-full object-cover h-48 rounded-md" />
+                                <button
+                                    type="button"
+                                    onClick={() => setImagePreview(null)}
+                                    className="text-3xl text-red-500 absolute -top-3 -right-4"
+                                >
+                                    <IoCloseCircle />
+                                </button>
+                            </div>
+                        ) : (
+                            <input
+                                type="file"
+                                {...register("art")}
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="h-full"
+                                required
+                            />
+                        )}
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="field">
@@ -126,25 +139,6 @@ const AddAlbum: React.FC = () => {
                                 step="0.01"
                             />
                         </div>
-                    </div>
-                </div>
-                <div className="field">
-                    <label htmlFor="collaborators">Collaborators</label>
-                    <div className="flex gap-3 flex-wrap w-[900px]">
-                        {collaborators.map((collaborator, index) => (
-                            <div key={index}>
-                                <input
-                                    type="text"
-                                    value={collaborator}
-                                    onChange={(e) => handleCollaboratorChange(index, e.target.value)}
-                                    className=""
-                                    required
-                                />
-                            </div>
-                        ))}
-                        <button type="button" onClick={addCollaborator} className="border border-gray-300 rounded-md shadow-xl px-3 py-2 w-fit">
-                            Add Collaborator
-                        </button>
                     </div>
                 </div>
                 <div className="flex gap-7 mt-5">

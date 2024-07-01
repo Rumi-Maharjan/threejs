@@ -10,7 +10,7 @@ const MasterLayout: React.FC<Props> = ({ children }) => {
     return (
         <div>
             <Navbar/>
-                <main className="store-bg">{children}</main>
+                <main className="store-bg text-black">{children}</main>
             <Footer/>
         </div>
     );
