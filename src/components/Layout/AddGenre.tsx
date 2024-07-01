@@ -50,7 +50,7 @@ const AddGenre: React.FC = () => {
                 footer={
                     <div className="flex gap-7 mt-5">
                         <button form="genreForm" type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Add Genre</button>
-                        <button onClick={handleCloseModal} className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button>
+                        <button onClick={handleCloseModal} className="border border-black rounded-md px-14 py-3 w-fit text-lg text-black">Cancel</button>
                     </div>
                 }
             >

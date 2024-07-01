@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     return (
         <div className="store-bg pb-10">
             <div className="flex w-[80%] mx-auto justify-between items-center py-5">
-                <div className="text-5xl font-semibold">Prodheen</div>
+                <div className="text-5xl font-semibold text-black">Prodheen</div>
                 <div className="flex gap-3 text-3xl">
                     <FiUser />
                     <IoFolderOpenOutline />
