@@ -406,3 +406,11 @@ body {
   padding-left: 7px;
   /* font-size: 16px; */
 }
+
+.p-dialog-mask {
+  background-color: rgba(0,0,0,.5);
+}
+
+.shadow-full {
+  box-shadow: 0 0 2px black;
+}

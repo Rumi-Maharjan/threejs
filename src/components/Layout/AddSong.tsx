@@ -42,7 +42,9 @@ const AddSong: React.FC = () => {
         formData.append('albumId', String(data.albumId));
         formData.append('ratings', String(data.ratings));
         formData.append('length', data.length);
-        formData.append('collaborators', JSON.stringify(data.collaborators));
+        for (let i = 0; i < data.collaborators.length; i++) {
+            formData.append('collaborators', data.collaborators[i]);
+        }
     
         if (data.images && data.images[0]) {
             formData.append('images', data.images[0]);

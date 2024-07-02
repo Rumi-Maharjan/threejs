@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import TableLayout from "@/components/Layout/TableLayout";
 import { useRouter } from "next/navigation";
 import { Dialog } from "primereact/dialog";
+import { ImBin } from "react-icons/im";
+import { FaEdit } from "react-icons/fa";
 
 interface Genre  {
     id: number;
@@ -80,7 +82,7 @@ const AddGenre: React.FC = () => {
                 title="Genres"
                 topRightButtonText="New"
                 headings={{ Title: "name" }}
-                actionsText={["Edit", "Delete"]}
+                actionsText={[<FaEdit key="edit" />, <ImBin key="delete" />]}
                 onClickAction1={() => {}}
                 onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
@@ -90,16 +92,18 @@ const AddGenre: React.FC = () => {
             <Dialog
                 header={title}
                 visible={isModalOpen}
-                style={{ width: '500px' }}
+                style={{ width: '460px' }}
                 onHide={handleCloseModal}
                 footer={
-                    <div className="flex gap-7 mt-5">
-                        <button form="genreForm" type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Add Genre</button>
-                        <button onClick={handleCloseModal} className="border border-black rounded-md px-14 py-3 w-fit text-lg text-black">Cancel</button>
+                    <div className="flex gap-5 mt-5">
+                        <button form="genreForm" type="submit" className="bg-black rounded-md text-white py-2 text-sm w-36">Add Genre</button>
+                        <button onClick={handleCloseModal} className="border border-black rounded-md py-2 text-sm text-black w-36">Cancel</button>
                     </div>
                 }
+                className="bg-white p-7 rounded-md"
+                headerClassName="font-medium text-2xl"
             >
-                <form id="genreForm" onSubmit={handleFormSubmit} className="input-form">
+                <form id="genreForm" onSubmit={handleFormSubmit} className="input-form mt-5">
                     <div className="field">
                         <label htmlFor="name">Genre Name</label>
                         <input

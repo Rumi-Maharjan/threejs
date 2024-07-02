@@ -5,9 +5,18 @@ import Header from "@/components/Layout/header";
 import TableLayout from "@/components/Layout/TableLayout";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ImBin } from "react-icons/im";
+import { FaEdit } from "react-icons/fa";
+
+interface Item  {
+    id: number;
+    name: string;
+    price: string;
+    qunatity: string;
+};
 
 const StoreItemPage: React.FC = () => {
-    const [tableData, setTableData] = useState([]);
+    const [tableData, setTableData] = useState<Item[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,6 +34,18 @@ const StoreItemPage: React.FC = () => {
         }
     };
 
+    const handleDelete = async (id: number) => {
+        try {
+            const index = tableData[id].id;
+            await fetch('/api/item?id=' + index, {
+                method: 'DELETE'
+            });
+            await getData();
+        } catch (error) {
+            console.error("Error deleting data:", error);
+        }
+    };
+
     return (
         <Header>
             <TableLayout
@@ -37,9 +58,9 @@ const StoreItemPage: React.FC = () => {
                     Category: "",
                     Quantity: "quantity",
                 }}
-                actionsText={["Edit", "Delete"]}
+                actionsText={[<FaEdit key="edit" />, <ImBin key="delete" />]}
                 onClickAction1={() => {}}
-                onClickAction2={() => {}}
+                onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
                 onTopRightButtonAction={() => router.push("/admin/store/store-item/add-store-item")}
             />

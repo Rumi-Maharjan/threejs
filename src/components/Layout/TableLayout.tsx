@@ -5,7 +5,7 @@ interface TableLayoutProps {
     title: string;
     headings: Record<string, string>;
     topRightButtonText: string;
-    actionsText: string[];
+    actionsText: React.ReactNode[];
     onTopRightButtonAction: () => void;
     onClickAction1: (index: number) => void;
     onClickAction2: (index: number) => void;
@@ -87,13 +87,13 @@ const TableLayout: React.FC<TableLayoutProps> = ({
                                 <input
                                 type="text"
                                 id="form-subscribe-Filter"
-                                className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                                className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-full text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                                 placeholder="search"
                                 onChange={handleSearch}
                                 />
                             </div>
                             <button
-                                className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200"
+                                className="flex-shrink-0 px-4 py-2 text-base font-semibold text-white bg-black rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200"
                                 onClick={_onTopRightButtonAction}
                             >
                                 {topRightButtonText}
@@ -153,10 +153,10 @@ const TableLayout: React.FC<TableLayoutProps> = ({
                                         actionsText.map((actionItem, k) => (
                                             <td
                                                 key={k}
-                                                className="px-4 py-4 border-b border-gray-200 bg-white text-sm"
+                                                className="px-4 py-3 border-b border-gray-200 bg-white text-lg"
                                             >
                                                 <button
-                                                    className="text-purple-600 hover:text-purple-900 hover:underline"
+                                                    className="text-gray-600 hover:text-red-600"
                                                     onClick={() => {
                                                     switch (k) {
                                                         case 0:
