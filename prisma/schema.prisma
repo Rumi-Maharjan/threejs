@@ -1,12 +1,10 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 enum Sizes {
   SMALL
   MEDIUM
@@ -15,7 +13,6 @@ enum Sizes {
   DOUBLE_EXTRA_LARGE
   TRIPLE_EXTRA_LARGE
 }
-
 enum Color {
   RED
   GREEN
@@ -26,7 +23,6 @@ enum Color {
   BLACK
   YELLOW
 }
-
 model Album {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -40,23 +36,24 @@ model Album {
   songs     Song[]   @relation("AlbumSongs")
   images    Image[]
 }
-
 model Collaborators {
   id    Int    @id @default(autoincrement())
   name  String @unique @db.VarChar(255)
+<<<<<<< HEAD
+  songs Song   @relation(references: [id], fields: [songId])
+=======
   songs Song   @relation(references: [id], fields: [songId], onDelete: Cascade, onUpdate: Cascade)
 
+>>>>>>> a29828cf1f719c1e088820a008f531981039682f
   songId           Int
   SongCollaborator SongCollaborator[]
 }
-
 model Genre {
   id     Int     @id @default(autoincrement())
   name   String  @unique @db.VarChar(255)
   albums Album[]
   Song   Song[]
 }
-
 model Image {
   id        Int         @id @default(autoincrement())
   createdAt DateTime    @default(now())
@@ -73,7 +70,6 @@ model Image {
   item      Store_Item? @relation(fields: [itemId], references: [id])
   itemId    Int?
 }
-
 model Song {
   id               Int                @id @default(autoincrement())
   createdAt        DateTime           @default(now())
@@ -89,7 +85,6 @@ model Song {
   images           Image?
   SongCollaborator SongCollaborator[]
 }
-
 model SongCollaborator {
   songId         Int
   collaboratorId Int
@@ -98,7 +93,6 @@ model SongCollaborator {
 
   @@id([songId, collaboratorId])
 }
-
 model About {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
@@ -107,7 +101,6 @@ model About {
   description String   @db.Text
   images      Image[]
 }
-
 model Blog {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -117,7 +110,6 @@ model Blog {
   author    String   @db.VarChar(255)
   images    Image[]
 }
-
 model Inquiry {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -128,7 +120,6 @@ model Inquiry {
   subject   String   @db.Text
   title     String   @db.VarChar(255)
 }
-
 model Store_Category {
   id          Int          @id @default(autoincrement())
   createdAt   DateTime     @default(now())
@@ -137,7 +128,6 @@ model Store_Category {
   description String       @db.Text
   storeItem   Store_Item[]
 }
-
 model Store_Item {
   id            Int            @id @default(autoincrement())
   createdAt     DateTime       @default(now())
@@ -153,7 +143,6 @@ model Store_Item {
   images        Image[]
   storeCategory Store_Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
-
 model Gallery {
   id          Int        @id @default(autoincrement())
   createdAt   DateTime   @default(now())
@@ -164,7 +153,6 @@ model Gallery {
   category    GCategory? @relation(fields: [category_id], references: [id])
   category_id Int?
 }
-
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -173,7 +161,6 @@ model User {
   email     String   @unique
   password  String   @db.VarChar(255)
 }
-
 model Video {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -181,7 +168,6 @@ model Video {
   name      String   @db.VarChar(255)
   link      String   @db.VarChar(255)
 }
-
 model GCategory {
   id          Int       @id @default(autoincrement())
   createdAt   DateTime  @default(now())

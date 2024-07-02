@@ -1,58 +1,82 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Sizes, Color } from "@prisma/client/edge";
 
 interface IFormInput {
     name: string;
-    image: string[];
+    images: string[];
     description: string;
-    category: string;
+    category_id: number;
     price: number;
-    sizes: string[];
-    colors: string[];
-    qty: number;
+    size: string[];
+    color: string[];
+    quantity: number;
+}
+
+interface Category {
+    id: number;
+    name: string;
 }
 
 const StoreList: React.FC = () => {
     const [isEditMode, setEditMode] = useState(false);
     const router = useRouter();
+    const [categoryData, setCategoryData] = useState<Category[]>([]);
 
     const { register, handleSubmit } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
+        const formData = new FormData();
+    
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        for (let i = 0; i < data.images.length; i++) {
+            formData.append('images', data.images[i]);
+        }
+        data.size.forEach(size => formData.append('size', size));
+        data.color.forEach(color => formData.append('color', color));
+        formData.append('category_id', String(data.category_id));
+        formData.append('price', String(data.price));
+        formData.append('quantity', String(data.quantity));
+        console.log('Sizes:', data.size);
+    
+        try {
+            const response = await fetch('/api/item', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const responseData = await response.json();
+            console.log(responseData);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        try {
+            const res = await fetch('/api/category/');
+            const json = await res.json();
+            console.log("data:", json);
+            setCategoryData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
     };
 
     const title = isEditMode ? "Edit Store Item" : "Add Store Item";
-
-    const colorData = [
-        { id: 1, name: "Color1" },
-        { id: 2, name: "Color2" },
-        { id: 3, name: "Color3" },
-        { id: 4, name: "Color4" },
-        { id: 5, name: "Color5" },
-        { id: 6, name: "Color6" },
-        { id: 7, name: "Color7" },
-        { id: 8, name: "Color8" },
-        { id: 9, name: "Color9" },
-        { id: 10, name: "Color10" },
-        { id: 11, name: "Color11" },
-    ];
-
-    const categoryData = [
-        { id: 1, name: "Category1" },
-        { id: 2, name: "Category2" },
-        { id: 3, name: "Category3" },
-        { id: 4, name: "Category4" },
-        { id: 5, name: "Category5" },
-        { id: 6, name: "Category6" },
-        { id: 7, name: "Category7" },
-        { id: 8, name: "Category8" },
-        { id: 9, name: "Category9" },
-        { id: 10, name: "Category10" },
-        { id: 11, name: "Category11" },
-    ];
 
     return (
         <div className="pl-8">
@@ -70,8 +94,8 @@ const StoreList: React.FC = () => {
                         />
                     </div>
                     <div className="field">
-                        <label htmlFor="category">Store Category</label>
-                        <select {...register("category")} className="" required defaultValue="">
+                        <label htmlFor="category_id">Store Category</label>
+                        <select {...register("category_id")} className="" required defaultValue="">
                             <option value="" disabled hidden>Select Store Categoy</option>
                             {categoryData.map((category) => (
                                 <option key={category.id} value={category.id}>
@@ -83,10 +107,10 @@ const StoreList: React.FC = () => {
                 </div>
                 <div className="flex gap-7">
                     <div className="field">
-                        <label htmlFor="image">Image</label>
+                        <label htmlFor="images">Image</label>
                         <input
                             type="file"
-                            {...register("image")}
+                            {...register("images")}
                             accept="image/*"
                             placeholder=""
                             className="h-full"
@@ -118,10 +142,10 @@ const StoreList: React.FC = () => {
                         />
                     </div>
                     <div className="field">
-                        <label htmlFor="qty">Quantity</label>
+                        <label htmlFor="quantity">Quantity</label>
                         <input
                             type="number"
-                            {...register("qty")}
+                            {...register("quantity")}
                             placeholder=""
                             className=""
                             required
@@ -131,22 +155,23 @@ const StoreList: React.FC = () => {
                 </div>
                 <div className="flex gap-7">
                     <div className="field">
-                        <label htmlFor="sizes">Sizes</label>
-                        <select {...register("sizes")} className="" required>
+                        <label htmlFor="size">Sizes</label>
+                        <select {...register("size")} className="" required multiple>
                             <option value="" disabled hidden>Select Available Sizes</option>
-                            <option value="S">Small</option>
-                            <option value="M">Medium</option>
-                            <option value="L">Large</option>
-                            <option value="XL">Extra Large</option>
+                            {Object.values(Sizes).map((color) => (
+                                <option key={color} value={color}>
+                                    {color}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="field">
-                        <label htmlFor="colors">Colors</label>
-                        <select {...register("colors")} className="" required>
+                        <label htmlFor="color">Colors</label>
+                        <select {...register("color")} className="" required multiple>
                             <option value="" disabled hidden>Select Available Colors</option>
-                            {colorData.map((colors) => (
-                                <option key={colors.id} value={colors.id}>
-                                    {colors.name}
+                            {Object.values(Color).map((color) => (
+                                <option key={color} value={color}>
+                                    {color}
                                 </option>
                             ))}
                         </select>

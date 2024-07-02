@@ -1,31 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoCloseCircle } from "react-icons/io5";
 
 interface IFormInput {
     name: string;
-    art: string;
+    images: string;
     price: number;
-    genre: string;
+    genreId: number;
     track_no: number;
     ratings: number;
 }
 
+interface Genre {
+    id: number;
+    name: string;
+}
+
 const AddAlbum: React.FC = () => {
-    const [isEditMode, setEditMode] = useState(false);
+    const [isEditMode, setEditMode] = useState<boolean>(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const router = useRouter();
+    const [genreData, setGenreData] = useState<Genre[]>([]);
 
     const { register, handleSubmit } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        if (data.art && data.art[0]) {
-            const file = data.art[0];
-            data.art = file;
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        
+
+        const formData = new FormData();
+    
+        formData.append('name', data.name);
+        formData.append('price', String(data.price));
+        formData.append('genreId', String(data.genreId));
+        formData.append('track_no', String(data.track_no));
+        formData.append('ratings', String(data.ratings));
+    
+        if (data.images && data.images[0]) {
+            formData.append('images', data.images[0]);
         }
-        console.log(data);
+    
+        try {
+            const response = await fetch('/api/album', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const responseData = await response.json();
+            console.log(responseData);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,21 +65,23 @@ const AddAlbum: React.FC = () => {
         }
     };
 
-    const title = isEditMode ? "Edit Album" : "Add Album";
+    useEffect(() => {
+        getData()
+    }, [])
 
-    const genreData = [
-        { id: 1, name: "Genre1" },
-        { id: 2, name: "Genre2" },
-        { id: 3, name: "Genre3" },
-        { id: 4, name: "Genre4" },
-        { id: 5, name: "Genre5" },
-        { id: 6, name: "Genre6" },
-        { id: 7, name: "Genre7" },
-        { id: 8, name: "Genre8" },
-        { id: 9, name: "Genre9" },
-        { id: 10, name: "Genre10" },
-        { id: 11, name: "Genre11" },
-    ];
+    const getData = async () => {
+        const res = await fetch('/api/genre/')
+        const json = await res.json()
+        console.log("data:",json)
+        setGenreData(json.data);
+
+        if (!json) {
+            router.push('/404')
+            return
+        }
+    }
+
+    const title = isEditMode ? "Edit Album" : "Add Album";
 
     return (
         <div className="pl-8">
@@ -67,8 +99,8 @@ const AddAlbum: React.FC = () => {
                         />
                     </div>
                     <div className="field">
-                        <label htmlFor="genre">Genre</label>
-                        <select {...register("genre")} className="" required defaultValue="">
+                        <label htmlFor="genreId">Genre</label>
+                        <select {...register("genreId")} className="" required defaultValue="">
                             <option value="" disabled hidden>Select Genre</option>
                             {genreData.map((genre) => (
                                 <option key={genre.id} value={genre.id}>
@@ -80,8 +112,8 @@ const AddAlbum: React.FC = () => {
                 </div>
                 <div className="flex gap-7">
                     <div className="field ">
-                        <label htmlFor="art">Image</label>
-                        {imagePreview ? (
+                        <label htmlFor="images">Image</label>
+                        {/* {imagePreview ? (
                             <div className="image h-48 relative">
                                 <img src={imagePreview} alt="Image Preview" className="w-full object-cover h-48 rounded-md" />
                                 <button
@@ -92,16 +124,16 @@ const AddAlbum: React.FC = () => {
                                     <IoCloseCircle />
                                 </button>
                             </div>
-                        ) : (
+                        ) : ( */}
                             <input
                                 type="file"
-                                {...register("art")}
+                                {...register("images")}
                                 accept="image/*"
                                 onChange={handleImageChange}
                                 className="h-full"
                                 required
                             />
-                        )}
+                        {/* )} */}
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="field">
