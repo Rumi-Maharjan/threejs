@@ -44,7 +44,7 @@ model Album {
 model Collaborators {
   id    Int    @id @default(autoincrement())
   name  String @unique @db.VarChar(255)
-  songs Song   @relation(references: [id], fields: [songId])
+  songs Song   @relation(references: [id], fields: [songId], onDelete: Cascade, onUpdate: Cascade)
 
   songId           Int
   SongCollaborator SongCollaborator[]
@@ -93,8 +93,8 @@ model Song {
 model SongCollaborator {
   songId         Int
   collaboratorId Int
-  song           Song          @relation(fields: [songId], references: [id])
-  collaborator   Collaborators @relation(fields: [collaboratorId], references: [id])
+  song           Song          @relation(fields: [songId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collaborator   Collaborators @relation(fields: [collaboratorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([songId, collaboratorId])
 }
@@ -145,8 +145,8 @@ model Store_Item {
   name          String         @db.VarChar(255)
   description   String         @db.Text
   price         Float
-  size         Sizes[]
-  color        Color[]
+  size          Sizes[]
+  color         Color[]
   quantity      Int
   category_id   Int
   status        Boolean?       @default(true)
