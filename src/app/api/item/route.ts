@@ -88,7 +88,19 @@ export async function GET(req:Request) {
 }
 
 export async function PATCH(req:Request) {
-    const { name, description, price, sizes, colors, quantity, category_id } = await req.json();
+    const formData = await req.formData();
+    const files: File[] | null = formData.getAll('images') as unknown as File[];
+    const name = formData.get('name') as unknown as string;
+    const price = parseFloat(formData.get('price') as string);
+    const quantity = parseInt(formData.get('quantity') as string, 10);
+    const category_id = parseInt(formData.get('category_id') as string, 10);
+    const description = formData.get('description') as string;
+    const sizesString = formData.getAll('size') as unknown as string[] ;
+    const colorsString = formData.getAll('color') as unknown as string[];
+    
+    const size = stringArrayToEnum(Sizes, sizesString);
+    const color = stringArrayToEnum(Color, colorsString);
+
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
 
@@ -101,16 +113,17 @@ export async function PATCH(req:Request) {
             { status: 500 }
         );
     }
+    console.log(existingUser)
 
-    const updateData = {
-        ...(name !== undefined && { name }),
-        ...(description !== undefined && { description }),
-        ...(price !== undefined && { price }),
-        ...(sizes !== undefined && { sizes }),
-        ...(colors !== undefined && { colors }),
-        ...(quantity !== undefined && { quantity }),
-        ...(category_id !== undefined && { category_id }),
-    };
+    const updateData: any = {};
+    if (name !== null) updateData.name = name;
+    if (description !== null) updateData.description = description;
+    if (price !== undefined) updateData.price = price;
+    if (size !== undefined) updateData.size = size;
+    if (color !== undefined) updateData.color = color;
+    if (quantity !== undefined) updateData.quantity = quantity;
+    if (category_id !== undefined) updateData.category_id = category_id;
+    console.log(updateData)
 
     const item = await prisma.store_Item.update({
         where: {
@@ -118,6 +131,42 @@ export async function PATCH(req:Request) {
         },
         data: updateData,
     })
+
+    if(files) {
+        const item_image = await prisma.image.findMany({
+            where: {
+                itemId: id,
+            }
+        })
+        if(item_image) {
+            await prisma.image.deleteMany({
+                where: {
+                    itemId: id,
+                },
+            })
+        }
+        const imageRecords = [];
+        for (const file of files) {
+        try {
+            const result = await saveFile(file, imagePath); 
+            const image = await prisma.image.create({
+                data: {
+                    url: result,
+                    item: {
+                        connect: { id: item.id },
+                    },
+                },
+            });
+            imageRecords.push(image);
+            } catch (error) {
+                console.error('Error saving image:', error);
+                return Response.json(
+                    { message: 'Failed to upload image(s)' },
+                    { status: 500 }
+                );
+            }
+        }
+    }
 
     return Response.json(
         {
