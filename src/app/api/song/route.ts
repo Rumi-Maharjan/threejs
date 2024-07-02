@@ -96,7 +96,23 @@ export async function GET(req:Request) {
 }
 
 export async function PATCH(req:Request) {
-    const { title, length, ratings, genreId, albumId } = await req.json();
+    const formData = await req.formData();
+    const file: File | null = formData.get('images') as unknown as File;
+    const title = formData.get('title') as unknown as string;
+    const length = formData.get('length') as string;
+    const albumIdStr = formData.get('albumId') as string;
+    const ratingsStr = formData.get('ratings') as string;
+    const genreIdStr = formData.get('genreId') as string;
+
+    const collaborators = formData.getAll('collaborators') as unknown as string;
+    console.log(collaborators)
+    const collaboratorIds = [];
+
+    const albumId = albumIdStr ? parseInt(albumIdStr) : undefined;
+    const genreId = genreIdStr ? parseInt(genreIdStr) : undefined;
+    const ratings = ratingsStr ? parseFloat(ratingsStr) : undefined;
+
+
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
 
@@ -107,13 +123,12 @@ export async function PATCH(req:Request) {
         return Response.json({ message: "not found" });
     }
 
-    const updateData = {
-        ...(title !== undefined && { title }),
-        ...(length !== undefined && { length }),
-        ...(ratings !== undefined && { ratings }),
-        ...(genreId !== undefined && { genreId }),
-        ...(albumId !== undefined && { albumId }),
-    };
+    const updateData: any = {};
+    if (title !== null) updateData.title = title;
+    if (length !== null) updateData.length = length;
+    if (ratings !== undefined) updateData.ratings = ratings;
+    if (genreId !== undefined) updateData.genreId = genreId;
+    if (albumId !== undefined) updateData.albumId = albumId;
 
     const songs = await prisma.song.update({
         where: {
@@ -121,6 +136,53 @@ export async function PATCH(req:Request) {
         },
         data: updateData,
     })
+
+    if(file) {
+        const imageRecords = [];
+    
+    try {
+        const result = await saveFile(file, imagePath);
+
+        await prisma.image.delete({
+            where:{
+                songId: id,
+            }
+        })
+    
+        const image = await prisma.image.create({
+            data: {
+                url: result,
+                song: {
+                    connect: { id: songs.id },
+                },
+            },
+        });
+        imageRecords.push(image);
+    } catch (error) {
+        console.error('Error saving image:', error);
+        return Response.json({ message: 'Failed to upload image(s)' });
+    }
+    }
+
+    if(collaborators) {
+        await prisma.collaborators.deleteMany({
+            where: {
+                songId: id
+            }
+        });
+        for (const name of collaborators) {
+            const collaborator = await prisma.collaborators.create({
+                data: 
+                { 
+                    name ,
+                    songs: {
+                        connect: { id: songs.id}
+                    }
+                },
+            });
+            collaboratorIds.push(collaborator.id);
+        }
+    }    
 
     return Response.json(
         { message: "OK" },
@@ -133,13 +195,19 @@ export const DELETE = async (req: Request) => {
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
 
-        const songs = await prisma.song.delete({
+    await prisma.collaborators.deleteMany({
+        where:{
+            songId: id,
+        }
+    })
+
+    const songs = await prisma.song.delete({
         where: {
             id: id,
         },
-        });
+    });
     
-        if (!songs) {
+    if (!songs) {
         return Response.json(
             {
             message: "Error",
@@ -148,7 +216,7 @@ export const DELETE = async (req: Request) => {
             status: 500,
             }
         );
-        }
+    }
     
     return Response.json(
         { message: "Ok" }, {status: 202 }

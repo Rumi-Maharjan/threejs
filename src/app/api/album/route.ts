@@ -26,7 +26,7 @@ export async function POST(req:Request, res:Response) {
 
     const imageRecords = [];
     for (const file of files) {
-        try {
+        try{
             const result = await saveFile(file, imagePath);
     
             const image = await prisma.image.create({
@@ -38,11 +38,12 @@ export async function POST(req:Request, res:Response) {
                 },
             });
             imageRecords.push(image);
-            } catch (error) {
-                console.error('Error saving image:', error);
-                return Response.json({ message: 'Failed to upload image(s)' });
-            }
+        } catch (error) {
+            console.error('Error saving image:', error);
+            return Response.json({ message: 'Failed to upload image(s)' });
         }
+    }
+
     if(!albums) {
         return Response.json(
             {
@@ -74,8 +75,19 @@ export async function GET(req:Request) {
 }
 
 export async function PATCH(req:Request) {
-    
-    const { name,price,track_no,ratings, genreId } = await req.json();
+    const formData = await req.formData();
+    const files: File[] | null = formData.getAll('images') as unknown as File[];
+    const name = formData.get('name') as unknown as string;
+    const priceStr = formData.get('price') as string;
+    const trackStr = formData.get('track_no') as string;
+    const ratingsStr = formData.get('ratings') as string;
+    const genreIdStr = formData.get('genreId') as string;
+
+    const track_no = trackStr ? parseInt(trackStr) : undefined;
+    const price = priceStr ? parseFloat(priceStr) : undefined;
+    const genreId = genreIdStr ? parseInt(genreIdStr) : undefined;
+    const ratings = ratingsStr ? parseFloat(ratingsStr) : undefined;
+
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
 
@@ -86,13 +98,12 @@ export async function PATCH(req:Request) {
         return Response.json({ message: "not found" });
     }
 
-    const updateData = {
-        ...(name !== undefined && { name }),
-        ...(price !== undefined && { price }),
-        ...(track_no !== undefined && { track_no }),
-        ...(ratings !== undefined && { ratings }),
-        ...(genreId !== undefined && { genreId }),
-    }
+    const updateData: any = {};
+    if (name !== null) updateData.name = name;
+    if (track_no !== null) updateData.track_no = track_no;
+    if (ratings !== undefined) updateData.ratings = ratings;
+    if (genreId !== undefined) updateData.genreId = genreId;
+    if (price !== undefined) updateData.price = price;
 
     const albums = await prisma.album.update({
         where: {
@@ -100,6 +111,33 @@ export async function PATCH(req:Request) {
         },
         data: updateData,
     })
+    if(files) {
+        const imageRecords = [];
+        for(const file of files) {
+            try {
+                const result = await saveFile(file, imagePath);
+        
+                await prisma.image.deleteMany({
+                    where:{
+                        albumId: id,
+                    }
+                })
+            
+                const image = await prisma.image.create({
+                    data: {
+                        url: result,
+                        album: {
+                            connect: { id: albums.id },
+                        },
+                    },
+                });
+                imageRecords.push(image);
+            } catch (error) {
+                console.error('Error saving image:', error);
+                return Response.json({ message: 'Failed to upload image(s)' });
+            }
+        }
+    }
 
     return Response.json(
         {
