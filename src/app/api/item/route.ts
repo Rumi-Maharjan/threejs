@@ -91,15 +91,20 @@ export async function PATCH(req:Request) {
     const formData = await req.formData();
     const files: File[] | null = formData.getAll('images') as unknown as File[];
     const name = formData.get('name') as unknown as string;
-    const price = parseFloat(formData.get('price') as string);
-    const quantity = parseInt(formData.get('quantity') as string, 10);
-    const category_id = parseInt(formData.get('category_id') as string, 10);
-    const description = formData.get('description') as string;
-    const sizesString = formData.getAll('size') as unknown as string[] ;
+    const priceStr = formData.get('price') as string | null;
+    const quantityStr = formData.get('quantity') as string | null;
+    const category_idStr = formData.get('category_id') as string | null;
+    const description = formData.get('description') as string | null;
+    const sizesString = formData.getAll('size') as unknown as string[];
     const colorsString = formData.getAll('color') as unknown as string[];
+
+    const price = priceStr ? parseFloat(priceStr) : undefined;
+    const quantity = quantityStr ? parseInt(quantityStr, 10) : undefined;
+    const category_id = category_idStr ? parseInt(category_idStr, 10) : undefined;
     
     const size = stringArrayToEnum(Sizes, sizesString);
     const color = stringArrayToEnum(Color, colorsString);
+
 
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
@@ -113,7 +118,6 @@ export async function PATCH(req:Request) {
             { status: 500 }
         );
     }
-    console.log(existingUser)
 
     const updateData: any = {};
     if (name !== null) updateData.name = name;
@@ -123,7 +127,7 @@ export async function PATCH(req:Request) {
     if (color !== undefined) updateData.color = color;
     if (quantity !== undefined) updateData.quantity = quantity;
     if (category_id !== undefined) updateData.category_id = category_id;
-    console.log(updateData)
+    
 
     const item = await prisma.store_Item.update({
         where: {
