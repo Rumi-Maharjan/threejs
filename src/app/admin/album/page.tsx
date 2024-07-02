@@ -7,8 +7,23 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const AlbumPage: React.FC = () => {
-    const [tableData, updateTableData] = useState([]);
+    const [tableData, setTableData] = useState([]);
     const router = useRouter();
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        try {
+            const res = await fetch('/api/album/');
+            const json = await res.json();
+            console.log("data:", json);
+            setTableData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
     return (
         <Header>
@@ -16,7 +31,12 @@ const AlbumPage: React.FC = () => {
                 data={tableData}
                 title="Albums"
                 topRightButtonText="New"
-                headings={{ Title: "" }}
+                headings={{ 
+                    Title: "name",
+                    Track_No: "track_no",
+                    Price: "price", 
+                    // Genre: "genreId"
+                }}
                 actionsText={["Edit", "Delete"]}
                 onClickAction1={() => {}}
                 onClickAction2={() => {}}

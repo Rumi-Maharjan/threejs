@@ -1,14 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TableLayout from "@/components/Layout/TableLayout";
 import { useRouter } from "next/navigation";
 import { Dialog } from "primereact/dialog";
 
+interface Genre  {
+    id: number;
+    name: string;
+};
+
 const AddGenre: React.FC = () => {
-    const [tableData, updateTableData] = useState([]);
+    const [tableData, setTableData] = useState<Genre[]>([]);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [genreName, setGenreName] = useState("");
+    const [name, setName] = useState("");
     const router = useRouter();
     const [isEditMode, setEditMode] = useState(false);
 
@@ -20,13 +25,53 @@ const AddGenre: React.FC = () => {
         setModalOpen(false);
     };
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const handleFormSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Genre Name:", genreName);
+        console.log("Genre Name:", name);
+        await fetch('/api/genre', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name
+            })
+        }).then((res) => {
+            console.log(res)
+        }).catch((e) => {
+            console.log(e)
+        })
         setModalOpen(false);
     };
 
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = async () => {
+        try {
+            const res = await fetch('/api/genre/');
+            const json = await res.json();
+            console.log("data:", json);
+            setTableData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
     const title = isEditMode ? "Edit Genre" : "Add Genre";
+
+    const handleDelete = async (id: number) => {
+        const index = tableData[id].id;
+        await fetch(`/api/genre/${index}`, {
+            method: 'DELETE'
+        }).then((res) => {
+            console.log(res)
+            setTableData((prevData) => prevData.filter(item => item.id !== id));
+        }).catch((e) => {
+            console.log(e)
+        });
+    };
 
     return (
         <div>
@@ -34,10 +79,10 @@ const AddGenre: React.FC = () => {
                 data={tableData}
                 title="Genres"
                 topRightButtonText="New"
-                headings={{ Title: "" }}
+                headings={{ Title: "name" }}
                 actionsText={["Edit", "Delete"]}
                 onClickAction1={() => {}}
-                onClickAction2={() => {}}
+                onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
                 onTopRightButtonAction={handleTopRightButtonClick}
             />
@@ -56,12 +101,12 @@ const AddGenre: React.FC = () => {
             >
                 <form id="genreForm" onSubmit={handleFormSubmit} className="input-form">
                     <div className="field">
-                        <label htmlFor="genreName">Genre Name</label>
+                        <label htmlFor="name">Genre Name</label>
                         <input
                             type="text"
-                            id="genreName"
-                            value={genreName}
-                            onChange={(e) => setGenreName(e.target.value)}
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             required
                         />
                     </div>

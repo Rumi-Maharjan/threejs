@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 interface IFormInput {
     name: string;
-    image: string;
+    // image: string;
     description: string;
 }
 
@@ -15,8 +15,23 @@ const StoreCategory: React.FC = () => {
     const router = useRouter();
 
     const { register, handleSubmit } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    const onSubmit: SubmitHandler<IFormInput> = async(data) => {
         console.log(data);
+        const name = data.name;
+        const description = data.description;
+        await fetch('/api/category', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name, description
+            })
+        }).then((res) => {
+            console.log(res)
+        }).catch((e) => {
+            console.log(e)
+        })
     };
 
     const title = isEditMode ? "Edit Store Category" : "Add Store Category";
@@ -36,7 +51,7 @@ const StoreCategory: React.FC = () => {
                     />
                 </div>
                 <div className="flex gap-7">
-                    <div className="field">
+                    {/* <div className="field">
                         <label htmlFor="image">Image</label>
                         <input
                             type="file"
@@ -46,7 +61,7 @@ const StoreCategory: React.FC = () => {
                             className="h-full"
                             required
                         />
-                    </div>
+                    </div> */}
                     <div className="field">
                         <label htmlFor="description">Description</label>
                         <textarea
