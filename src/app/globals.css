@@ -400,6 +400,7 @@ body {
 .input-form .image {
   border: 1px solid rgb(151, 151, 151);
   border-radius: 7px;
+  width: 400px;
 }
 
 .input-form label {

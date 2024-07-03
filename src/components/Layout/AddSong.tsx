@@ -7,12 +7,13 @@ import { IoCloseCircle } from "react-icons/io5";
 
 interface IFormInput {
     title: string;
-    images: string;
+    images: FileList | null;
     albumId: number;
     length: string;
     song_preview: string;
     ratings: number;
     collaborators: string[];
+    url: string;
 }
 
 interface Album {
@@ -29,24 +30,22 @@ const AddSong: React.FC = () => {
     const [albumData, setAlbumData] = useState<Album[]>([]);
     const [songData, setSongData] = useState<IFormInput>({
         title: "",
-        images: "",
+        images: null,
         albumId: 0,
         length: "",
         song_preview: "",
         ratings: 0,
         collaborators: [],
+        url: "",
     });
 
     const index = searchParams.get('id');
     console.log("id:",index);
 
-    const { register, handleSubmit, setValue } = useForm<IFormInput>();
+    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async(data) => {
-        // if (data.images && data.images[0]) {
-        //     const file = data.images[0];
-        //     data.images = file;
-        // }
-        data.collaborators = collaborators;
+        const validCollaborators = collaborators.filter(collab => collab.trim() !== "");
+        data.collaborators = validCollaborators;
         console.log(data);
 
         const formData = new FormData();
@@ -64,31 +63,18 @@ const AddSong: React.FC = () => {
         }
     
         try {
-            if (index) {
-                const response = await fetch(`/api/song?id=${index}`, {
-                    method: 'PATCH',
-                    body: formData,
-                });
-        
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-        
-                const responseData = await response.json();
-                console.log(responseData);
-            } else {
-                const response = await fetch('/api/song', {
-                    method: 'POST',
-                    body: formData,
-                });
-        
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-        
-                const responseData = await response.json();
-                console.log(responseData);
+            const response = await fetch(index ? `/api/song?id=${index}` : '/api/song', {
+                method: index ? 'PATCH' : 'POST',
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+    
+            const responseData = await response.json();
+            console.log(responseData);
+            reset();
         } catch (error) {
             console.error('Error:', error);
         }
@@ -100,6 +86,11 @@ const AddSong: React.FC = () => {
             setImagePreview(URL.createObjectURL(file));
         }
     };
+
+    const handleImageClear = () => {
+        setImagePreview(null);
+        setValue("images", null);
+    }
 
     useEffect(() => {
         getData();
@@ -120,8 +111,6 @@ const AddSong: React.FC = () => {
         }
     };
 
-    console.log("Album data:",albumData);
-
     const getSongData = async (id: string) => {
         try {
             const res = await fetch(`/api/song/${id}`);
@@ -129,13 +118,24 @@ const AddSong: React.FC = () => {
             console.log("Fetched Data:", json);
             setSongData(json.data);
             setValue("title", json.data.title);
-            setValue("images", json.data.images);
             setValue("length", json.data.length);
             setValue("albumId", json.data.albumId);
             setValue("ratings", json.data.ratings);
             setValue("song_preview", json.data.song_preview);
             setValue("ratings", json.data.ratings);
-            setValue("collaborators", json.data.collaborators);
+            const collaboratorsNames = json.data.collaborators.map((collab: { name: string }) => collab.name);
+            setCollaborators(collaboratorsNames);
+            setValue("collaborators", collaboratorsNames);
+            if (json.data.images) {
+                setImagePreview(json.data.images.url);
+                const imageUrl = json.data.images.url;
+                const blob = await fetch(imageUrl).then((r) => r.blob());
+                const file = new File([blob], "album_image.png", { type: blob.type });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                const fileList = dataTransfer.files;
+                setValue("images", fileList);
+            }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -188,31 +188,37 @@ const AddSong: React.FC = () => {
                 <div className="flex gap-7">
                     <div className="field">
                         <label htmlFor="images">Image</label>
-                        {/* {imagePreview ? (
-                            <div className="image h-48 relative">
-                                <img src={imagePreview} alt="Image Preview" className="w-full object-cover h-48 rounded-md" />
-                                <button
-                                    type="button"
-                                    onClick={() => setImagePreview(null)}
-                                    className="text-3xl text-red-500 absolute -top-3 -right-4"
-                                >
-                                    <IoCloseCircle />
-                                </button>
-                            </div>
-                        ) : ( */}
+                        <div className="relative h-full w-[400px]">
                             <input
                                 type="file"
                                 {...register("images")}
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="h-full"
-                                required
+                                className="h-full w-full"
+                                required={!isEditMode || (!imagePreview && isEditMode)}
                             />
-                        {/* )} */}
+                            {imagePreview && (
+                                <div className="image absolute top-0">
+                                    <img src={imagePreview} alt="Image Preview" className="object-cover rounded-md h-48 w-full" />
+                                    <button
+                                        type="button"
+                                        onClick={handleImageClear}
+                                        className="text-3xl text-red-500 absolute -top-3 -right-4"
+                                    >
+                                        <IoCloseCircle />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
                         <div className="field">
-                            <label htmlFor="length">Length</label>
+                            <div className="flex gap-3">
+                                <label htmlFor="length">Length</label>
+                                {errors.length && (
+                                    <span className="text-red-500 text-sm">Invalid time format. Please use mm:ss.</span>
+                                )}
+                            </div>
                             <input
                                 type="text"
                                 {...register("length", { validate: validateTime })}
@@ -221,14 +227,24 @@ const AddSong: React.FC = () => {
                                 required
                             />
                         </div>
-                        <div className="field">
+                        {/* <div className="field">
                             <label htmlFor="song_preview">Song Preview</label>
                             <input
                                 type="file"
                                 {...register("song_preview")}
-                                // accept="audio/*"
+                                accept="audio/*"
                                 placeholder=""
                                 className=""
+                            />
+                        </div> */}
+                        <div className="field">
+                            <label htmlFor="url">Spotify URL</label>
+                            <input
+                                type="text"
+                                {...register("url")}
+                                placeholder=""
+                                className=""
+                                required
                             />
                         </div>
                         <div className="field">

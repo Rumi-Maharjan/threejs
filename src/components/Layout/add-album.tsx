@@ -7,11 +7,12 @@ import { IoCloseCircle } from "react-icons/io5";
 
 interface IFormInput {
     name: string;
-    images: string;
+    images: FileList | null;
     price: number;
     genreId: number;
     track_no: number;
     ratings: number;
+    url: string;
 }
 
 interface Genre {
@@ -27,11 +28,12 @@ const AddAlbum: React.FC = () => {
     const [genreData, setGenreData] = useState<Genre[]>([]);
     const [albumData, setAlbumData] = useState<IFormInput>({
         name: "",
-        images: "",
+        images: null,
         price: 0,
         genreId: 0,
         track_no: 0,
         ratings: 0,
+        url: "",
     })
 
     const index = searchParams.get('id');
@@ -78,6 +80,11 @@ const AddAlbum: React.FC = () => {
         }
     };
 
+    const handleImageClear = () => {
+        setImagePreview(null);
+        setValue("images", null);
+    }
+
     useEffect(() => {
         getData();
         if (index) {
@@ -99,16 +106,25 @@ const AddAlbum: React.FC = () => {
 
     const getAlbumData = async (id: string) => {
         try {
-            const res = await fetch(`/api/item/${id}`);
+            const res = await fetch(`/api/album/${id}`);
             const json = await res.json();
             console.log("Fetched Data:", json);
             setAlbumData(json.data);
             setValue("name", json.data.name);
-            setValue("images", json.data.images);
             setValue("price", json.data.price);
             setValue("genreId", json.data.genreId);
             setValue("track_no", json.data.track_no);
             setValue("ratings", json.data.ratings);
+            if (json.data.images && json.data.images.length > 0) {
+                setImagePreview(json.data.images[0].url);
+                const imageUrl = json.data.images[0].url;
+                const blob = await fetch(imageUrl).then((r) => r.blob());
+                const file = new File([blob], "album_image.png", { type: blob.type });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                const fileList = dataTransfer.files;
+                setValue("images", fileList);
+            }
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -146,29 +162,30 @@ const AddAlbum: React.FC = () => {
                 <div className="flex gap-7">
                     <div className="field ">
                         <label htmlFor="images">Image</label>
-                        {/* {imagePreview ? (
-                            <div className="image h-48 relative">
-                                <img src={imagePreview} alt="Image Preview" className="w-full object-cover h-48 rounded-md" />
-                                <button
-                                    type="button"
-                                    onClick={() => setImagePreview(null)}
-                                    className="text-3xl text-red-500 absolute -top-3 -right-4"
-                                >
-                                    <IoCloseCircle />
-                                </button>
-                            </div>
-                        ) : ( */}
+                        <div className="w-[400px] relative h-full">
                             <input
                                 type="file"
                                 {...register("images")}
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="h-full"
-                                required
+                                className="h-full w-full"
+                                required={!isEditMode || (!imagePreview && isEditMode)}
                             />
-                        {/* )} */}
+                            {imagePreview && (
+                                <div className="image absolute top-0">
+                                    <img src={imagePreview} alt="Image Preview" className="object-cover rounded-md h-72" />
+                                    <button
+                                        type="button"
+                                        onClick={handleImageClear}
+                                        className="text-3xl text-red-500 absolute -top-3 -right-4"
+                                    >
+                                        <IoCloseCircle />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-4">
                         <div className="field">
                             <label htmlFor="price">Price</label>
                             <input
@@ -179,6 +196,16 @@ const AddAlbum: React.FC = () => {
                                 required
                                 min={0}
                                 step="0.01"
+                            />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="url">Spotify URL</label>
+                            <input
+                                type="text"
+                                {...register("url")}
+                                placeholder=""
+                                className=""
+                                required
                             />
                         </div>
                         <div className="field">

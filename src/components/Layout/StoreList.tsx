@@ -2,17 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Sizes, Color } from "@prisma/client/edge";
+import Select from "react-select";
 
 interface IFormInput {
     name: string;
-    images: string[];
+    images: File[];
     description: string;
     category_id: number;
     price: number;
-    size: string[];
-    color: string[];
+    size: { value: string; label: string }[];
+    color: { value: string; label: string }[];
     quantity: number;
 }
 
@@ -26,6 +27,7 @@ const StoreList: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [categoryData, setCategoryData] = useState<Category[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [listData, setListData] = useState<IFormInput>({
         name: "",
         images: [],
@@ -40,7 +42,7 @@ const StoreList: React.FC = () => {
     const index = searchParams.get('id');
     console.log("id:",index);
 
-    const { register, handleSubmit, setValue, reset } = useForm<IFormInput>();
+    const { register, handleSubmit, setValue, reset, control } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
         const formData = new FormData();
@@ -50,8 +52,8 @@ const StoreList: React.FC = () => {
         for (let i = 0; i < data.images.length; i++) {
             formData.append('images', data.images[i]);
         }
-        data.size.forEach(size => formData.append('size', size));
-        data.color.forEach(color => formData.append('color', color));
+        data.size.forEach((size) => formData.append("size", size.value));
+        data.color.forEach((color) => formData.append("color", color.value));
         formData.append('category_id', String(data.category_id));
         formData.append('price', String(data.price));
         formData.append('quantity', String(data.quantity));
@@ -103,18 +105,37 @@ const StoreList: React.FC = () => {
             setListData(json.data);
             setValue("name", json.data.name);
             setValue("description", json.data.description);
-            setValue("images", json.data.images);
             setValue("category_id", json.data.category_id);
             setValue("price", json.data.price);
             setValue("quantity", json.data.quantity);
-            setValue("size", json.data.size);
-            setValue("color", json.data.color);
+            setValue("size", json.data.size.map((size: string) => ({ value: size, label: size })));
+            setValue("color", json.data.color.map((color: string) => ({ value: color, label: color })));
+            setValue("images", json.data.images);
+            setImagePreviews(json.data.images);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
 
     const title = isEditMode ? "Edit Store Item" : "Add Store Item";
+
+    const sizeOptions = Object.values(Sizes).map((size) => ({ value: size, label: size }));
+    const colorOptions = Object.values(Color).map((color) => ({ value: color, label: color }));
+
+    const customStyles = {
+        control: (provided: any) => ({
+            ...provided,
+            border: '1px solid rgb(151, 151, 151);',
+            boxShadow: 'none',
+            minHeight: '40px',
+            borderRadius: '7px',
+            '&:focus-within': {
+            border: '2px solid black',
+            boxShadow: 'none',
+        },
+        }),
+    };
+
 
     return (
         <div className="pl-8">
@@ -194,25 +215,41 @@ const StoreList: React.FC = () => {
                 <div className="flex gap-7">
                     <div className="field">
                         <label htmlFor="size">Sizes</label>
-                        <select {...register("size")} className="" required multiple>
-                            <option value="" disabled hidden>Select Available Sizes</option>
-                            {Object.values(Sizes).map((color) => (
-                                <option key={color} value={color}>
-                                    {color}
-                                </option>
-                            ))}
-                        </select>
+                        <Controller
+                            control={control}
+                            name="size"
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    isMulti
+                                    options={sizeOptions}
+                                    styles={customStyles}
+                                    value={field.value}
+                                    onChange={(selectedOptions) => field.onChange(selectedOptions)}
+                                    required
+                                />
+                            )}
+                        />
+
                     </div>
                     <div className="field">
                         <label htmlFor="color">Colors</label>
-                        <select {...register("color")} className="" required multiple>
-                            <option value="" disabled hidden>Select Available Colors</option>
-                            {Object.values(Color).map((color) => (
-                                <option key={color} value={color}>
-                                    {color}
-                                </option>
-                            ))}
-                        </select>
+                        <Controller
+                            control={control}
+                            name="color"
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    isMulti
+                                    options={colorOptions}
+                                    styles={customStyles}
+                                    value={field.value}
+                                    onChange={(selectedOptions) => field.onChange(selectedOptions)}
+                                    required
+                                />
+                            )}
+                        />
+
                     </div>
                 </div>
                 <div className="flex gap-7 mt-5">
