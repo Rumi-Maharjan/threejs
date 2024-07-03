@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Sizes, Color } from "@prisma/client/edge";
 
@@ -24,9 +24,23 @@ interface Category {
 const StoreList: React.FC = () => {
     const [isEditMode, setEditMode] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [categoryData, setCategoryData] = useState<Category[]>([]);
+    const [listData, setListData] = useState<IFormInput>({
+        name: "",
+        images: [],
+        description: "",
+        category_id: 0,
+        price: 0,
+        size: [],
+        color: [],
+        quantity: 0,
+    });
 
-    const { register, handleSubmit } = useForm<IFormInput>();
+    const index = searchParams.get('id');
+    console.log("id:",index);
+
+    const { register, handleSubmit, setValue, reset } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
         const formData = new FormData();
@@ -44,8 +58,8 @@ const StoreList: React.FC = () => {
         console.log('Sizes:', data.size);
     
         try {
-            const response = await fetch('/api/item', {
-                method: 'POST',
+            const response = await fetch(index ? `/api/item?id=${index}` : '/api/item', {
+                method: index ? 'PATCH' : 'POST',
                 body: formData,
             });
     
@@ -55,6 +69,7 @@ const StoreList: React.FC = () => {
     
             const responseData = await response.json();
             console.log(responseData);
+            reset();
         } catch (error) {
             console.error('Error:', error);
         }
@@ -62,8 +77,12 @@ const StoreList: React.FC = () => {
     
 
     useEffect(() => {
-        getData()
-    }, [])
+        getData();
+        if (index) {
+            setEditMode(true);
+            getListData(index);
+        }
+    }, [index]);
 
     const getData = async () => {
         try {
@@ -71,6 +90,25 @@ const StoreList: React.FC = () => {
             const json = await res.json();
             console.log("data:", json);
             setCategoryData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    const getListData = async (id: string) => {
+        try {
+            const res = await fetch(`/api/item/${id}`);
+            const json = await res.json();
+            console.log("Fetched Data:", json);
+            setListData(json.data);
+            setValue("name", json.data.name);
+            setValue("description", json.data.description);
+            setValue("images", json.data.images);
+            setValue("category_id", json.data.category_id);
+            setValue("price", json.data.price);
+            setValue("quantity", json.data.quantity);
+            setValue("size", json.data.size);
+            setValue("color", json.data.color);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -179,7 +217,7 @@ const StoreList: React.FC = () => {
                 </div>
                 <div className="flex gap-7 mt-5">
                     <button type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Submit</button>
-                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button>
+                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg" onClick={() => router.back()}>Cancel</button>
                 </div>
             </form>
         </div>

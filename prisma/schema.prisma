@@ -39,12 +39,8 @@ model Album {
 model Collaborators {
   id    Int    @id @default(autoincrement())
   name  String @unique @db.VarChar(255)
-<<<<<<< HEAD
-  songs Song   @relation(references: [id], fields: [songId])
-=======
   songs Song   @relation(references: [id], fields: [songId], onDelete: Cascade, onUpdate: Cascade)
 
->>>>>>> a29828cf1f719c1e088820a008f531981039682f
   songId           Int
   SongCollaborator SongCollaborator[]
 }

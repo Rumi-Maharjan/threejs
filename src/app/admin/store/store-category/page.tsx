@@ -44,6 +44,12 @@ const StoreCategoryPage: React.FC = () => {
         }
     };
 
+    const handleEdit = (id: number) => {
+        const index = tableData[id].id;
+        console.log(index, "clicked id is");
+        router.push(`/admin/store/store-category/add-store-category?id=${index}`);
+    };
+
     return (
         <Header>
             <TableLayout
@@ -52,7 +58,7 @@ const StoreCategoryPage: React.FC = () => {
                 topRightButtonText="New"
                 headings={{ Title: "name" }}
                 actionsText={[<FaEdit key="edit" />, <ImBin key="delete" />]}
-                onClickAction1={() => {}}
+                onClickAction1={(id) => handleEdit(id)}
                 onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
                 onTopRightButtonAction={() => router.push("/admin/store/store-category/add-store-category")}

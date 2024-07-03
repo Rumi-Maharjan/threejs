@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoCloseCircle } from "react-icons/io5";
 
@@ -25,9 +25,22 @@ const AddSong: React.FC = () => {
     const [collaborators, setCollaborators] = useState<string[]>([""]);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [albumData, setAlbumData] = useState<Album[]>([]);
+    const [songData, setSongData] = useState<IFormInput>({
+        title: "",
+        images: "",
+        albumId: 0,
+        length: "",
+        song_preview: "",
+        ratings: 0,
+        collaborators: [],
+    });
 
-    const { register, handleSubmit } = useForm<IFormInput>();
+    const index = searchParams.get('id');
+    console.log("id:",index);
+
+    const { register, handleSubmit, setValue } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async(data) => {
         // if (data.images && data.images[0]) {
         //     const file = data.images[0];
@@ -51,17 +64,31 @@ const AddSong: React.FC = () => {
         }
     
         try {
-            const response = await fetch('/api/song', {
-                method: 'POST',
-                body: formData,
-            });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (index) {
+                const response = await fetch(`/api/song?id=${index}`, {
+                    method: 'PATCH',
+                    body: formData,
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+        
+                const responseData = await response.json();
+                console.log(responseData);
+            } else {
+                const response = await fetch('/api/song', {
+                    method: 'POST',
+                    body: formData,
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+        
+                const responseData = await response.json();
+                console.log(responseData);
             }
-    
-            const responseData = await response.json();
-            console.log(responseData);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -75,8 +102,12 @@ const AddSong: React.FC = () => {
     };
 
     useEffect(() => {
-        getData()
-    }, [])
+        getData();
+        if (index) {
+            setEditMode(true);
+            getSongData(index);
+        }
+    }, [index]);
 
     const getData = async () => {
         try {
@@ -90,6 +121,25 @@ const AddSong: React.FC = () => {
     };
 
     console.log("Album data:",albumData);
+
+    const getSongData = async (id: string) => {
+        try {
+            const res = await fetch(`/api/song/${id}`);
+            const json = await res.json();
+            console.log("Fetched Data:", json);
+            setSongData(json.data);
+            setValue("title", json.data.title);
+            setValue("images", json.data.images);
+            setValue("length", json.data.length);
+            setValue("albumId", json.data.albumId);
+            setValue("ratings", json.data.ratings);
+            setValue("song_preview", json.data.song_preview);
+            setValue("ratings", json.data.ratings);
+            setValue("collaborators", json.data.collaborators);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
     const title = isEditMode ? "Edit Song" : "Add Song";
 
@@ -215,7 +265,7 @@ const AddSong: React.FC = () => {
                 </div>
                 <div className="flex gap-7 mt-5">
                     <button type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Submit</button>
-                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button>
+                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg" onClick={() => router.back()}>Cancel</button>
                 </div>
             </form>
         </div>

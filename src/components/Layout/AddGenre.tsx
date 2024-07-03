@@ -64,15 +64,15 @@ const AddGenre: React.FC = () => {
     const title = isEditMode ? "Edit Genre" : "Add Genre";
 
     const handleDelete = async (id: number) => {
-        const index = tableData[id].id;
-        await fetch(`/api/genre/${index}`, {
-            method: 'DELETE'
-        }).then((res) => {
-            console.log(res)
-            setTableData((prevData) => prevData.filter(item => item.id !== id));
-        }).catch((e) => {
-            console.log(e)
-        });
+        try {
+            const index = tableData[id].id;
+            await fetch('/api/genre?id=' + index, {
+                method: 'DELETE'
+            });
+            await getData();
+        } catch (error) {
+            console.error("Error deleting data:", error);
+        }
     };
 
     return (

@@ -8,7 +8,7 @@ const Sidebar: React.FC = () =>{
         <div>
             <div className="h-full bg w-[260px] fixed top-0 left-0 flex flex-col border-r border-gray shadow-xl z-10 text-black">
                 <Link href="/admin" className="flex justify-center border-b w-full">
-                    <div className="flex items-center justify-center h-[98px]">PROHDEEN</div>
+                    <div className="flex items-center justify-center h-[99px]">PROHDEEN</div>
                 </Link>
                 <div className="w-full flex justify-center mt-4">
                     <div className="flex flex-col my-4 w-full gap-7 items-center">

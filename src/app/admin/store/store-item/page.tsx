@@ -46,6 +46,12 @@ const StoreItemPage: React.FC = () => {
         }
     };
 
+    const handleEdit = (id: number) => {
+        const index = tableData[id].id;
+        console.log(index, "clicked id is");
+        router.push(`/admin/store/store-item/add-store-item?id=${index}`);
+    };
+
     return (
         <Header>
             <TableLayout
@@ -59,7 +65,7 @@ const StoreItemPage: React.FC = () => {
                     Quantity: "quantity",
                 }}
                 actionsText={[<FaEdit key="edit" />, <ImBin key="delete" />]}
-                onClickAction1={() => {}}
+                onClickAction1={(id) => handleEdit(id)}
                 onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
                 onTopRightButtonAction={() => router.push("/admin/store/store-item/add-store-item")}

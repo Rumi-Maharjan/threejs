@@ -6,7 +6,7 @@ export const GET = async (
 ) => {
     const id = Number(context.params.id || 0);
 
-    const songs = await prisma.song.findUnique({
+    const item = await prisma.store_Item.findUnique({
         where: {
             id: id,
         },
@@ -15,14 +15,9 @@ export const GET = async (
                 select: {
                     url: true,
                 }
-            },
-            collaborators: {
-                select: {
-                    name: true,
-                }
             }
         }
     });
 
-    return Response.json({ data: songs });
+    return Response.json({ data: item });
 };
