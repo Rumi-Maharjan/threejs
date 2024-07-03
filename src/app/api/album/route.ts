@@ -5,6 +5,7 @@ export async function POST(req:Request, res:Response) {
     const formData = await req.formData();
     const files: File[] | null = formData.getAll('images') as unknown as File[];
     const name = formData.get('name') as unknown as string;
+    const url = formData.get('url') as unknown as string;
     const price = parseFloat(formData.get('price') as string);
     const track_no = parseInt(formData.get('track_no') as string, 10);
     const ratings = parseInt(formData.get('ratings') as string, 10);
@@ -16,7 +17,8 @@ export async function POST(req:Request, res:Response) {
             price,
             track_no,
             ratings, 
-            genreId
+            genreId,
+            url
         }
     })
 
@@ -82,14 +84,15 @@ export async function PATCH(req:Request) {
     const trackStr = formData.get('track_no') as string;
     const ratingsStr = formData.get('ratings') as string;
     const genreIdStr = formData.get('genreId') as string;
+    const url = formData.get('url') as unknown as string;
 
     const track_no = trackStr ? parseInt(trackStr) : undefined;
     const price = priceStr ? parseFloat(priceStr) : undefined;
     const genreId = genreIdStr ? parseInt(genreIdStr) : undefined;
     const ratings = ratingsStr ? parseFloat(ratingsStr) : undefined;
 
-    const url = new URL(req.url).searchParams;
-    const id = Number(url.get("id")) || 0;
+    const url1 = new URL(req.url).searchParams;
+    const id = Number(url1.get("id")) || 0;
 
     const existingUser = await prisma.album.findUnique({
         where: { id },
@@ -104,6 +107,7 @@ export async function PATCH(req:Request) {
     if (ratings !== undefined) updateData.ratings = ratings;
     if (genreId !== undefined) updateData.genreId = genreId;
     if (price !== undefined) updateData.price = price;
+    if (url !== undefined) updateData.url = url;
 
     const albums = await prisma.album.update({
         where: {

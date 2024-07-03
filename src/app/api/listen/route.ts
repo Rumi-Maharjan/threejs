@@ -22,7 +22,7 @@ export async function POST(req: Request) {
             }
         });
 
-        const contact = await prisma.contact.create({
+        const listen = await prisma.listen.create({
             data: {
                 name: names,
                 value: values
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req:Request) {
-    const contacts = await prisma.contact.findMany()
+    const contacts = await prisma.listen.findMany()
     return Response.json({
         message: "OK",
         status: 200,
@@ -53,7 +53,7 @@ export async function PATCH(req:Request) {
     const id = Number(url.get("id")) || 0;
     console.log(data)
 
-    const existingContact = await prisma.contact.findUnique({
+    const existingContact = await prisma.listen.findUnique({
         where: { id },
     });
     if (!existingContact) {
@@ -74,7 +74,7 @@ export async function PATCH(req:Request) {
         const updatedValue = values !== undefined ? values : existingContact.value;
         console.log(updatedName, updatedValue)
 
-        const contact = await prisma.contact.update({
+        const listen = await prisma.listen.update({
             where: { id: id },
             data: {
                 name: updatedName,
@@ -93,7 +93,7 @@ export const DELETE = async (req: Request) => {
     const url = new URL(req.url).searchParams;
     const id = Number(url.get("id")) || 0;
 
-        const contacts = await prisma.contact.delete({
+        const contacts = await prisma.listen.delete({
         where: {
             id: id,
         },

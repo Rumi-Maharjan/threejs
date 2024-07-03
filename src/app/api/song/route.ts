@@ -6,6 +6,7 @@ export async function POST(req:Request) {
     const file: File | null = formData.get('images') as unknown as File;
     const title = formData.get('title') as unknown as string;
     const length = formData.get('length') as string;
+    const url = formData.get('url') as string;
     const albumId = parseInt(formData.get('albumId') as string, 10);
     const ratings = parseInt(formData.get('ratings') as string, 10);
     const genreId = parseInt(formData.get('genreId') as string, 10);
@@ -21,6 +22,7 @@ export async function POST(req:Request) {
             ratings,
             genreId,
             albumId,
+            url
         }
     })
 
@@ -103,6 +105,7 @@ export async function PATCH(req:Request) {
     const albumIdStr = formData.get('albumId') as string;
     const ratingsStr = formData.get('ratings') as string;
     const genreIdStr = formData.get('genreId') as string;
+    const url = formData.get('url') as string;
 
     const collaborators = formData.getAll('collaborators') as unknown as string;
     console.log(collaborators)
@@ -113,8 +116,8 @@ export async function PATCH(req:Request) {
     const ratings = ratingsStr ? parseFloat(ratingsStr) : undefined;
 
 
-    const url = new URL(req.url).searchParams;
-    const id = Number(url.get("id")) || 0;
+    const url1 = new URL(req.url).searchParams;
+    const id = Number(url1.get("id")) || 0;
 
     const existingUser = await prisma.song.findUnique({
         where: { id },
@@ -129,6 +132,8 @@ export async function PATCH(req:Request) {
     if (ratings !== undefined) updateData.ratings = ratings;
     if (genreId !== undefined) updateData.genreId = genreId;
     if (albumId !== undefined) updateData.albumId = albumId;
+    if (url !== undefined) updateData.url = url;
+
 
     const songs = await prisma.song.update({
         where: {
