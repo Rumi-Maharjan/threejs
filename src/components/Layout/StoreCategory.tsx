@@ -27,9 +27,8 @@ const StoreCategory: React.FC = () => {
         console.log(data);
         const name = data.name;
         const description = data.description;
-        if (index) {
-            await fetch(`/api/category?id=${index}`, {
-                method: 'PATCH',
+            await fetch(index ? `/api/category?id=${index}` : '/api/category', {
+                method: index ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -41,21 +40,6 @@ const StoreCategory: React.FC = () => {
             }).catch((e) => {
                 console.log(e)
             })
-        } else {
-            await fetch('/api/category', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name, description
-                })
-            }).then((res) => {
-                console.log(res)
-            }).catch((e) => {
-                console.log(e)
-            })
-        }
     };
 
     useEffect(() => {

@@ -18,6 +18,7 @@ const AddGenre: React.FC = () => {
     const [name, setName] = useState("");
     const router = useRouter();
     const [isEditMode, setEditMode] = useState(false);
+    const [index, setIndex] = useState<number | null>(null);
 
     const handleTopRightButtonClick = () => {
         setModalOpen(true);
@@ -30,8 +31,8 @@ const AddGenre: React.FC = () => {
     const handleFormSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
         console.log("Genre Name:", name);
-        await fetch('/api/genre', {
-            method: 'POST',
+        await fetch(index? `/api/genre?id=${index}` : '/api/genre', {
+            method: index ? 'PATCH' : 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -75,6 +76,12 @@ const AddGenre: React.FC = () => {
         }
     };
 
+    const handleEdit = (id: number) => {
+        const dataId = tableData[id].id;
+        setIndex(dataId);
+        console.log(index, "clicked id is");
+    };
+
     return (
         <div>
             <TableLayout
@@ -83,7 +90,7 @@ const AddGenre: React.FC = () => {
                 topRightButtonText="New"
                 headings={{ Title: "name" }}
                 actionsText={[<FaEdit key="edit" />, <ImBin key="delete" />]}
-                onClickAction1={() => {}}
+                onClickAction1={(id) => handleEdit(id)}
                 onClickAction2={(id) => handleDelete(id)}
                 onClickAction3={() => {}}
                 onTopRightButtonAction={handleTopRightButtonClick}
