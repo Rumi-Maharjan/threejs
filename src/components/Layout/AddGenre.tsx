@@ -79,6 +79,7 @@ const AddGenre: React.FC = () => {
     const handleEdit = (id: number) => {
         const dataId = tableData[id].id;
         setIndex(dataId);
+        setModalOpen(true);
         console.log(index, "clicked id is");
     };
 
