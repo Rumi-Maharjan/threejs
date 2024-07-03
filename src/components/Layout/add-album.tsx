@@ -115,6 +115,7 @@ const AddAlbum: React.FC = () => {
             setValue("genreId", json.data.genreId);
             setValue("track_no", json.data.track_no);
             setValue("ratings", json.data.ratings);
+            setValue("url", json.data.url);
             if (json.data.images && json.data.images.length > 0) {
                 setImagePreview(json.data.images[0].url);
                 const imageUrl = json.data.images[0].url;
@@ -172,8 +173,8 @@ const AddAlbum: React.FC = () => {
                                 required={!isEditMode || (!imagePreview && isEditMode)}
                             />
                             {imagePreview && (
-                                <div className="image absolute top-0">
-                                    <img src={imagePreview} alt="Image Preview" className="object-cover rounded-md h-72" />
+                                <div className="image absolute top-0 w-[400px]">
+                                    <img src={imagePreview} alt="Image Preview" className="object-cover rounded-md h-72 w-full" />
                                     <button
                                         type="button"
                                         onClick={handleImageClear}

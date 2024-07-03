@@ -123,6 +123,7 @@ const AddSong: React.FC = () => {
             setValue("ratings", json.data.ratings);
             setValue("song_preview", json.data.song_preview);
             setValue("ratings", json.data.ratings);
+            setValue("url", json.data.url);
             const collaboratorsNames = json.data.collaborators.map((collab: { name: string }) => collab.name);
             setCollaborators(collaboratorsNames);
             setValue("collaborators", collaboratorsNames);

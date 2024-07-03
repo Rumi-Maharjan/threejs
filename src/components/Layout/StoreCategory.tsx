@@ -22,7 +22,7 @@ const StoreCategory: React.FC = () => {
     const index = searchParams.get('id');
     console.log("id:",index);
 
-    const { register, handleSubmit, setValue } = useForm<IFormInput>();
+    const { register, handleSubmit, setValue, reset } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async(data) => {
         console.log(data);
         const name = data.name;
@@ -37,6 +37,7 @@ const StoreCategory: React.FC = () => {
                 })
             }).then((res) => {
                 console.log(res)
+                reset();
             }).catch((e) => {
                 console.log(e)
             })
