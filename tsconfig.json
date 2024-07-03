@@ -27,6 +27,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/context/ItemContext.tx"
-  ],
+, "src/app/api/route.js"  ],
   "exclude": ["node_modules"]
 }
