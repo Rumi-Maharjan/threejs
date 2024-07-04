@@ -17,6 +17,9 @@ const Sidebar: React.FC = () =>{
                         <Link href="/admin/song"><div>Song</div></Link>
                         <Link href="/admin/store/store-category"><div>Store Category</div></Link>
                         <Link href="/admin/store/store-item"><div>Store Item</div></Link>
+                        <Link href="/admin/inquiry"><div>Inquiry</div></Link>
+                        <Link href="/admin/contact"><div>Contact</div></Link>
+                        <Link href="/admin/platform"><div>Platform</div></Link>
                         <div>Gallery</div>
                         <div>Blogs</div>
                     </div>

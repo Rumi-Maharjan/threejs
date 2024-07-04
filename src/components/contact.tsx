@@ -15,7 +15,20 @@ interface IFormInput {
 
 const Contact: React.FC = () => {
     const { register, handleSubmit } = useForm<IFormInput>()
-    const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data)
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        try {
+            const response = await fetch('/api/inquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return (
         <div className="w-[80%] mx-auto">
             <div className="relative">

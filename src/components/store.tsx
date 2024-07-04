@@ -1,11 +1,29 @@
 // Store.tsx
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FiUser } from "react-icons/fi";
 import { IoFolderOpenOutline } from "react-icons/io5";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+interface Image {
+    url: string;
+}
+
+interface Item {
+    id: number;
+    name: string;
+    images: Image[];
+    description: string;
+    category_id: number;
+    price: number;
+    size: { value: string; label: string }[];
+    color: { value: string; label: string }[];
+    quantity: number;
+}
+
 
 const items = [
     { name: "Daily Mix 1", image: "/Picture.png", price: "$ 25.00" },
@@ -20,15 +38,36 @@ const items = [
 ];
 
 const Store: React.FC = () => {
+
+    const [itemData, setItemData] = useState<Item[]>([]);
+    const [id, setId] = useState();
+
+    useEffect(() => {
+        getData();
+    }, []);
+    
+    const getData = async () => {
+        try {
+            const res = await fetch('/api/item/');
+            const json = await res.json();
+            console.log("data:", json);
+            setItemData(json.data);
+            setId(json.data.id);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+
     return (
         <div className="store-bg pt-10">
-            <div className="flex flex-wrap px-11 justify-between mb-40">
-                {items.map((item, index) => (
+            <div className="flex flex-wrap px-11 justify-between pb-40">
+                {itemData.map((item, index) => (
                     <div key={index} className="mb-11 cursor-pointer">
-                        <Link href={`/store/details?image=${encodeURIComponent(item.image)}`}>
-                            <motion.div layoutId={item.image} className="w-[30vw] h-[38vw] overflow-hidden">
+                        <Link href={`/store/details?id=${item.id}`}>
+                            <motion.div layoutId={item.images[0].url} className="w-[30vw] h-[38vw] overflow-hidden">
                                 <motion.img
-                                    src={item.image}
+                                    src={item.images[0].url}
                                     className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-105"
                                     alt={item.name}
                                 />
