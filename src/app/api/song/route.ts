@@ -5,6 +5,7 @@ export async function POST(req:Request) {
     const formData = await req.formData();
     const file: File | null = formData.get('images') as unknown as File;
     const title = formData.get('title') as unknown as string;
+    const url = formData.get('url') as unknown as string;
     const length = formData.get('length') as string;
     const albumId = parseInt(formData.get('albumId') as string, 10);
     const ratings = parseInt(formData.get('ratings') as string, 10);
@@ -21,6 +22,7 @@ export async function POST(req:Request) {
             ratings,
             genreId,
             albumId,
+            url
         }
     })
 

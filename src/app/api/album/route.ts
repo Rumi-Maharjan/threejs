@@ -5,6 +5,7 @@ export async function POST(req:Request, res:Response) {
     const formData = await req.formData();
     const files: File[] | null = formData.getAll('images') as unknown as File[];
     const name = formData.get('name') as unknown as string;
+    const url = formData.get('url') as unknown as string;
     const price = parseFloat(formData.get('price') as string);
     const track_no = parseInt(formData.get('track_no') as string, 10);
     const ratings = parseInt(formData.get('ratings') as string, 10);
@@ -16,7 +17,8 @@ export async function POST(req:Request, res:Response) {
             price,
             track_no,
             ratings, 
-            genreId
+            genreId,
+            url
         }
     })
 

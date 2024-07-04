@@ -27,6 +27,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/context/ItemContext.tx"
-  ],
+, "src/components/checkout.tsx", "src/app/api/payment/route.ts"  ],
   "exclude": ["node_modules"]
 }

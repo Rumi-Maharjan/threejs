@@ -1,17 +1,17 @@
 // Store.tsx
 "use client";
 
-import React from "react";
-import { FiUser } from "react-icons/fi";
-import { IoFolderOpenOutline } from "react-icons/io5";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {checkout}  from "./checkout";
+
 
 const items = [
-    { name: "Daily Mix 1", image: "/Picture.png", price: "$ 25.00" },
-    { name: "Daily Mix 2", image: "/moon.jpg", price: "$ 65.00" },
-    { name: "Liked Songs", image: "/owl planter.jpg", price: "$ 27.00" },
-    { name: "Mix 1", image: "/cyro.png", price: "$ 20.00" },
+    { name: "Daily Mix 1", image: "/Picture.png", price: "25" },
+    { name: "Daily Mix 2", image: "/moon.jpg", price: "65" },
+    { name: "Liked Songs", image: "/owl planter.jpg", price: "27" },
+    { name: "Mix 1", image: "/cyro.png", price: "20" },
     { name: "Mix 2", image: "/cow planter.jpg", price: "$ 30.00" },
     { name: "Mix 3", image: "/4357971.jpg", price: "$ 35.00" },
     { name: "Daily Mix 3", image: "/cat3.jpg", price: "$ 10.00" },
@@ -21,6 +21,13 @@ const items = [
 
 const Store: React.FC = () => {
     return (
+        <>
+        <div className="container">
+            <div id = 'payment'></div>
+            <div id="btn">
+                <button type="submit">Pay Now</button>
+            </div>
+        </div>
         <div className="store-bg pt-10">
             <div className="flex flex-wrap px-11 justify-between mb-40">
                 {items.map((item, index) => (
@@ -38,10 +45,21 @@ const Store: React.FC = () => {
                                 <div>{item.price}</div>
                             </div>
                         </Link>
+                        <button onClick={(() => {
+                            checkout([
+                            {
+                                price: item.price,
+                                quantity: 1,
+                                name: item.name,
+                            }
+                            ])
+                        })}>BUY NOW</button>
                     </div>
                 ))}
             </div>
         </div>
+        </>
+
     );
 };
 
