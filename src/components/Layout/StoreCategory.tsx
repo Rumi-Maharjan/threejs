@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
+import Swal from "sweetalert2";
+import { ProgressSpinner } from "primereact/progressspinner";
+import Link from "next/link";
 
 interface IFormInput {
     name: string;
@@ -14,6 +17,7 @@ const StoreCategory: React.FC = () => {
     const [isEditMode, setEditMode] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [loading, setLoading] = useState(false);
     const [categoryData, setCategoryData] = useState<IFormInput>({
         name: "",
         description: "",
@@ -27,6 +31,7 @@ const StoreCategory: React.FC = () => {
         console.log(data);
         const name = data.name;
         const description = data.description;
+        setLoading(true);
             await fetch(index ? `/api/category?id=${index}` : '/api/category', {
                 method: index ? 'PATCH' : 'POST',
                 headers: {
@@ -36,10 +41,25 @@ const StoreCategory: React.FC = () => {
                     name, description
                 })
             }).then((res) => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Store Category created sucessfully.',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
                 console.log(res)
                 reset();
+                setLoading(false);
+                router.back();
             }).catch((e) => {
                 console.log(e)
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error in creating store category. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+                setLoading(false);
             })
     };
 
@@ -52,14 +72,17 @@ const StoreCategory: React.FC = () => {
 
     const getCategoryData = async (id: string) => {
         try {
+            setLoading(true);
             const res = await fetch(`/api/category/${id}`);
             const json = await res.json();
             console.log("Fetched Data:", json);
             setCategoryData(json.data);
             setValue("name", json.data.name);
             setValue("description", json.data.description);
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setLoading(false);
         }
     };
 
@@ -103,7 +126,7 @@ const StoreCategory: React.FC = () => {
                 </div>
                 <div className="flex gap-7 mt-5">
                     <button type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Submit</button>
-                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg" onClick={() => router.back()}>Cancel</button>
+                    <Link href="/admin/store/store-category"><button className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button></Link>
                 </div>
             </form>
         </div>

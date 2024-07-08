@@ -10,7 +10,7 @@ interface IFormInput {
     values: string[];
 }
 
-const ArtistContact: React.FC = () => {
+const SocialMedia: React.FC = () => {
     const [fields, setFields] = useState<{ name: string; value: string }[]>([{ name: "", value: "" }]);
     const [isEditMode, setEditMode] = useState(false);
     const [id, setId] = useState();
@@ -19,6 +19,7 @@ const ArtistContact: React.FC = () => {
         names: [],
         values: [],
     });
+
     const { register, handleSubmit, reset, setValue, watch } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         console.log(data);
@@ -30,7 +31,7 @@ const ArtistContact: React.FC = () => {
 
         try {
             setLoading(true);
-            const response = await fetch(isEditMode ? `/api/contact?id=${id}` : '/api/contact', {
+            const response = await fetch(isEditMode ? `/api/social?id=${id}` : '/api/social', {
                 method: isEditMode ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -41,7 +42,7 @@ const ArtistContact: React.FC = () => {
             if (response.ok) {
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Contact information saved successfully.',
+                    text: 'Social Media Links saved successfully.',
                     icon: 'success',
                     confirmButtonText: 'Ok'
                 }).then(() => {
@@ -54,7 +55,7 @@ const ArtistContact: React.FC = () => {
             } else {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Failed to save contact information. Please try again.',
+                    text: 'Failed to save links. Please try again.',
                     icon: 'error',
                     confirmButtonText: 'Ok'
                 });
@@ -65,7 +66,7 @@ const ArtistContact: React.FC = () => {
             console.error('Error:', error);
             Swal.fire({
                 title: 'Error!',
-                text: 'Failed to save contact information. Please try again.',
+                text: 'Failed to save links. Please try again.',
                 icon: 'error',
                 confirmButtonText: 'Ok'
             });
@@ -73,7 +74,7 @@ const ArtistContact: React.FC = () => {
         }
     };
 
-    const title = isEditMode ? "Edit Contact Info" : "Add Contact Info";
+    const title = isEditMode ? "Edit Social Media Links" : "Add Social Media Links";
 
     const addField = () => {
         setFields([...fields, { name: "", value: "" }]);
@@ -98,7 +99,7 @@ const ArtistContact: React.FC = () => {
     const getData = async () => {
         try {
             setLoading(true);
-            const res = await fetch('/api/contact/');
+            const res = await fetch('/api/social/');
             const json = await res.json();
             console.log("data:", json);
             if (json.data.length > 0) {
@@ -121,8 +122,6 @@ const ArtistContact: React.FC = () => {
         }
     };
 
-    console.log("id",id);
-
     const handleCancel = () => {
         setEditMode(false);
         reset();
@@ -142,7 +141,7 @@ const ArtistContact: React.FC = () => {
                 {fields.map((field, index) => (
                     <div key={index} className="flex gap-7 mb-3 items-end">
                         <div className="field">
-                            <label htmlFor={`names[${index}]`}>Title</label>
+                            <label htmlFor={`names[${index}]`}>Name</label>
                             <input
                                 type="text"
                                 {...register(`names.${index}` as const)}
@@ -152,7 +151,7 @@ const ArtistContact: React.FC = () => {
                             />
                         </div>
                         <div className="field">
-                            <label htmlFor={`values[${index}]`}>Value</label>
+                            <label htmlFor={`values[${index}]`}>Link</label>
                             <input
                                 type="text"
                                 {...register(`values.${index}` as const)}
@@ -176,4 +175,4 @@ const ArtistContact: React.FC = () => {
     );
 };
 
-export default ArtistContact;
+export default SocialMedia;

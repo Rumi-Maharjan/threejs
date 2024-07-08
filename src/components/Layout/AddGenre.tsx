@@ -7,6 +7,7 @@ import { Dialog } from "primereact/dialog";
 import { ImBin } from "react-icons/im";
 import { FaEdit } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 interface IFormInput {
     name: string;
@@ -24,6 +25,7 @@ const AddGenre: React.FC = () => {
     const router = useRouter();
     const [isEditMode, setEditMode] = useState(false);
     const [index, setIndex] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const handleTopRightButtonClick = () => {
         setEditMode(false);
@@ -62,12 +64,15 @@ const AddGenre: React.FC = () => {
 
     const getData = async () => {
         try {
+            setLoading(true);
             const res = await fetch('/api/genre/');
             const json = await res.json();
             console.log("data:", json);
             setTableData(json.data);
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setLoading(false);
         }
     }
 
@@ -107,6 +112,12 @@ const AddGenre: React.FC = () => {
 
     return (
         <div>
+            {loading && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white opacity-75 z-50">
+                    <ProgressSpinner />
+                    <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                </div>
+            )}
             <TableLayout
                 data={tableData}
                 title="Genres"

@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoCloseCircle } from "react-icons/io5";
+import Swal from "sweetalert2";
+import { ProgressSpinner } from "primereact/progressspinner";
+import Link from "next/link";
 
 interface IFormInput {
     title: string;
@@ -23,6 +26,7 @@ interface Album {
 
 const AddSong: React.FC = () => {
     const [isEditMode, setEditMode] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [collaborators, setCollaborators] = useState<string[]>([""]);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const router = useRouter();
@@ -51,6 +55,7 @@ const AddSong: React.FC = () => {
         const formData = new FormData();
     
         formData.append('title', data.title);
+        formData.append('url', data.url);
         formData.append('albumId', String(data.albumId));
         formData.append('ratings', String(data.ratings));
         formData.append('length', data.length);
@@ -63,20 +68,51 @@ const AddSong: React.FC = () => {
         }
     
         try {
+            setLoading(true);
             const response = await fetch(index ? `/api/song?id=${index}` : '/api/song', {
                 method: index ? 'PATCH' : 'POST',
                 body: formData,
             });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Song created sucessfully.',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
+                // const responseData = await response.json();
+                // console.log(responseData);
+                reset();
+                setLoading(false);
+                router.back();
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error in creating song. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+                setLoading(false);
+                throw new Error('Failed to send message');
             }
     
-            const responseData = await response.json();
-            console.log(responseData);
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
+    
+            // const responseData = await response.json();
+            // console.log(responseData);
             reset();
         } catch (error) {
             console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error in creating song. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            setLoading(false);
         }
     };
 
@@ -113,6 +149,7 @@ const AddSong: React.FC = () => {
 
     const getSongData = async (id: string) => {
         try {
+            setLoading(true);
             const res = await fetch(`/api/song/${id}`);
             const json = await res.json();
             console.log("Fetched Data:", json);
@@ -137,8 +174,10 @@ const AddSong: React.FC = () => {
                 const fileList = dataTransfer.files;
                 setValue("images", fileList);
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setLoading(false);
         }
     };
 
@@ -161,6 +200,12 @@ const AddSong: React.FC = () => {
 
     return (
         <div className="pl-8">
+            {loading && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white opacity-75 z-50">
+                    <ProgressSpinner />
+                    <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                </div>
+            )}
             <div className="text-2xl font-medium mb-3">{title}</div>
             <form onSubmit={handleSubmit(onSubmit)} className="input-form">
                 <div className="flex gap-7">
@@ -282,7 +327,7 @@ const AddSong: React.FC = () => {
                 </div>
                 <div className="flex gap-7 mt-5">
                     <button type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Submit</button>
-                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg" onClick={() => router.back()}>Cancel</button>
+                    <Link href="/admin/song"><button className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button></Link>
                 </div>
             </form>
         </div>

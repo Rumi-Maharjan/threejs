@@ -1,10 +1,23 @@
 "use client";
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { FaRegBell } from "react-icons/fa6";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import { ProgressSpinner } from "primereact/progressspinner";
+
+interface AlbumData {
+    id: number;
+    name: string;
+    images: { url: string }[];
+    price: number;
+    genreId: number;
+    track_no: number;
+    ratings: number;
+    url: string;
+}
 
 const albums = [
     { name: "Daily Mix 1", image: "/Picture.png" },
@@ -18,6 +31,23 @@ const albums = [
 ];
 
 const Album: React.FC = () => {
+    const [albumData, setAlbumData] = useState<AlbumData[]>([]);
+
+    useEffect(() => {
+        getData();
+    }, []);
+    
+    const getData = async () => {
+        try {
+            const res = await fetch('/api/album/');
+            const json = await res.json();
+            console.log("data:", json);
+            setAlbumData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
     return (
         <div className="min-h-[100vh] gradient-bg p-7 text-white">
             <div className="text-white flex justify-between text-3xl mb-3">
@@ -36,11 +66,11 @@ const Album: React.FC = () => {
                 <div className="album-bg rounded-full px-3 px-3 py-1">Music</div>
             </div>
 
-            <div className="flex flex-wrap justify-between">
-                {albums.map((album, index) => (
+            <div className="flex flex-wrap gap-7">
+                {albumData.map((album, index) => (
                     <div key={index} className="w-[24%] album-bg font-semibold rounded-md mb-4">
-                        <Link href="/album/list" className="flex gap-5 items-center">
-                            <img src={album.image} className="h-20 w-20 rounded-l-md object-cover"/>
+                        <Link href={`/album/list?id=${album.id}`} className="flex gap-5 items-center">
+                            <img src={album.images[0].url} className="h-20 w-20 rounded-l-md object-cover"/>
                             <div>{album.name}</div>
                         </Link>
                     </div>

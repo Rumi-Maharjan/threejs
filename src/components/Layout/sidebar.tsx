@@ -11,7 +11,7 @@ const Sidebar: React.FC = () =>{
                     <div className="flex items-center justify-center h-[99px]">PROHDEEN</div>
                 </Link>
                 <div className="w-full flex justify-center mt-4">
-                    <div className="flex flex-col my-4 w-full gap-7 items-center">
+                    <div className="flex flex-col my-4 w-full gap-5 items-center">
                         <Link href="/admin/genre"><div>Genre</div></Link>
                         <Link href="/admin/album"><div>Album</div></Link>
                         <Link href="/admin/song"><div>Song</div></Link>
@@ -20,8 +20,9 @@ const Sidebar: React.FC = () =>{
                         <Link href="/admin/inquiry"><div>Inquiry</div></Link>
                         <Link href="/admin/contact"><div>Contact</div></Link>
                         <Link href="/admin/platform"><div>Platform</div></Link>
-                        <div>Gallery</div>
-                        <div>Blogs</div>
+                        <Link href="/admin/social"><div>Social Media</div></Link>
+                        {/* <div>Gallery</div>
+                        <div>Blogs</div> */}
                     </div>
                 </div>
             </div>

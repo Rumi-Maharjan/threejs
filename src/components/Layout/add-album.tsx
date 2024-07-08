@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { IoCloseCircle } from "react-icons/io5";
+import Swal from "sweetalert2";
+import { ProgressSpinner } from "primereact/progressspinner";
+import Link from "next/link";
 
 interface IFormInput {
     name: string;
@@ -26,6 +29,7 @@ const AddAlbum: React.FC = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [genreData, setGenreData] = useState<Genre[]>([]);
+    const [loading, setLoading] = useState(false);
     const [albumData, setAlbumData] = useState<IFormInput>({
         name: "",
         images: null,
@@ -42,10 +46,12 @@ const AddAlbum: React.FC = () => {
     const { register, handleSubmit, setValue, reset } = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
         
+    console.log("data:", data);
 
         const formData = new FormData();
     
         formData.append('name', data.name);
+        formData.append('url', data.url);
         formData.append('price', String(data.price));
         formData.append('genreId', String(data.genreId));
         formData.append('track_no', String(data.track_no));
@@ -56,20 +62,44 @@ const AddAlbum: React.FC = () => {
         }
     
         try {
+            setLoading(true);
             const response = await fetch(index ? `/api/album?id=${index}` : '/api/album', {
                 method: index ? 'PATCH' : 'POST',
                 body: formData,
             });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+
+            console.log(response);
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Album created sucessfully.',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
+                const responseData = await response.json();
+                console.log(responseData);
+                reset();
+                setLoading(false);
+                router.back();
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error in creating album. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+                setLoading(false);
+                throw new Error('Failed to send message');
             }
-    
-            const responseData = await response.json();
-            console.log(responseData);
-            reset();
         } catch (error) {
             console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error in creating album. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            setLoading(false);
         }
     };
 
@@ -106,6 +136,7 @@ const AddAlbum: React.FC = () => {
 
     const getAlbumData = async (id: string) => {
         try {
+            setLoading(true);
             const res = await fetch(`/api/album/${id}`);
             const json = await res.json();
             console.log("Fetched Data:", json);
@@ -126,8 +157,10 @@ const AddAlbum: React.FC = () => {
                 const fileList = dataTransfer.files;
                 setValue("images", fileList);
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setLoading(false);
         }
     };
 
@@ -135,6 +168,12 @@ const AddAlbum: React.FC = () => {
 
     return (
         <div className="pl-8">
+            {loading && (
+                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-white opacity-75 z-50">
+                    <ProgressSpinner />
+                    <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                </div>
+            )}
             <div className="text-2xl font-medium mb-3">{title}</div>
             <form onSubmit={handleSubmit(onSubmit)} className="input-form">
                 <div className="flex gap-7">
@@ -236,7 +275,7 @@ const AddAlbum: React.FC = () => {
                 </div>
                 <div className="flex gap-7 mt-5">
                     <button type="submit" className="bg-black rounded-md text-white px-14 py-3 w-fit text-lg">Submit</button>
-                    <button className="border border-black rounded-md px-14 py-3 w-fit text-lg" onClick={() => router.back()}>Cancel</button>
+                    <Link href="/admin/album"><button className="border border-black rounded-md px-14 py-3 w-fit text-lg">Cancel</button></Link>
                 </div>
             </form>
         </div>

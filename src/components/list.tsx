@@ -10,6 +10,7 @@ import { GoPlusCircle } from "react-icons/go";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { parseBlob } from 'music-metadata-browser';
+import { useSearchParams } from "next/navigation";
 
 interface Song {
     title: string;
@@ -19,6 +20,27 @@ interface Song {
     picture: string;
     filePath: string;
     durationSeconds: number;
+}
+
+interface SongData {
+    title: string;
+    images: { url: string }[];
+    albumId: number;
+    length: string;
+    song_preview: string;
+    ratings: number;
+    collaborators: string[];
+    url: string;
+}
+
+interface AlbumData {
+    name: string;
+    images: { url: string }[];
+    price: number;
+    genreId: number;
+    track_no: number;
+    ratings: number;
+    url: string;
 }
 
 const List: React.FC = () => {
@@ -32,6 +54,10 @@ const List: React.FC = () => {
     const [isShuffle, setIsShuffle] = useState(false);
     const [songs, setSongs] = useState<Song[]>([]);
     const [showTransition, setShowTransition] = useState(false);
+    const searchParams = useSearchParams();
+    const [songData, setSongData] = useState<SongData[]>([]);
+    const [albumData, setAlbumData] = useState<AlbumData>();
+
 
     const loadSongs = async () => {
         const songFiles = [
@@ -198,8 +224,30 @@ const List: React.FC = () => {
     // console.log("Total Duration Minutes:", totalDurationMinutes);
     // console.log("Total Duration Hours:", totalDurationHours);
 
+    const id = searchParams.get('id');
+    console.log("id:", id);
+
+    useEffect(() => {
+        if (id) {
+            getData(id);
+        }
+    }, [id]);
+
+    const getData = async (id: string) => {
+        try {
+            const res = await fetch(`/api/album/${id}`);
+            const json = await res.json();
+            console.log("data:", json);
+            setAlbumData(json.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    console.log("dataa:",albumData);
+
     return (
-        <div className={`min-h-[100vh] list-bg text-white ${showTransition ? 'split_vertical' : ''}`}>
+        <div className={`min-h-[100vh] list-bg text-white`}>
             <div className="text-white flex justify-between text-3xl mb-3 pt-7 px-7">
                 <div className="flex gap-5 arrow">
                     <IoChevronBackOutline className="rounded-full p-1 bg-black bg-opacity-30 direction" />
@@ -215,7 +263,7 @@ const List: React.FC = () => {
                 <img src="/moon.jpg" className="w-40 h-40 object-cover box-shadow rounded-sm" />
                 <div className="flex flex-col gap-2">
                     <div className="text-xs">Public Playlist</div>
-                    <div className="text-6xl font-bold">Daily Mix 4</div>
+                    <div className="text-6xl font-bold">{albumData?.name}</div>
                     <div className="text-stone-300 text-xs flex flex-col gap-1">
                         <div>Taylor Swift, Flo Rida, Black Eyed Peas and more</div>
                         <div>{songs.length} songs, {formattedTotalDuration}</div>
