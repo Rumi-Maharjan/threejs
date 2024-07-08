@@ -209,8 +209,8 @@ const Contact: React.FC = () => {
                         <div className="font-semibold text-xl mb-7">Follow On:</div>
                         <div className="flex grid grid-cols-3 gap-3 mb-11">
                             {socialData.name.map((name, index) => (
-                                <a href={socialData.value[index]} target="_blank" rel="noopener noreferrer">
-                                    <div key={index} className="rounded-md py-3 flex gap-3 w-44 justify-center text-gray-500 shadow-md border font-semibold">{name}</div>
+                                <a key={index} href={socialData.value[index]} target="_blank" rel="noopener noreferrer">
+                                    <div className="rounded-md py-3 flex gap-3 w-44 justify-center text-gray-500 shadow-md border font-semibold">{name}</div>
                                 </a>
                             ))}
                         </div>

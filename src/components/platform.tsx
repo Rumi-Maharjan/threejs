@@ -49,8 +49,8 @@ const Platform: React.FC = () => {
                         <div className="font-semibold text-xl mb-7">Listen On:</div>
                         <div className="flex gap-3 mb-11 flex-wrap">
                             {platformData.name.map((name, index) => (
-                                <a href={platformData.value[index]} target="_blank" rel="noopener noreferrer">
-                                    <div key={index} className="rounded-md py-3 flex gap-3 w-44 justify-center text-gray-500 shadow-md border font-semibold">{name}</div>
+                                <a key={index} href={platformData.value[index]} target="_blank" rel="noopener noreferrer">
+                                    <div className="rounded-md py-3 flex gap-3 w-44 justify-center text-gray-500 shadow-md border font-semibold">{name}</div>
                                 </a>
                             ))}
                         </div>

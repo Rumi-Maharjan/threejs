@@ -114,8 +114,8 @@ const Platform: React.FC = () => {
                 setEditMode(true);
                 setValue("names", namesValue);
                 setValue("values", valuesValue);
-                setLoading(false);
             }
+            setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
             setLoading(false);
