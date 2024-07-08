@@ -190,3 +190,11 @@ model Listen {
   name        String[]
   value       String[]
 }
+
+model Social {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String[]
+  value       String[]
+}
