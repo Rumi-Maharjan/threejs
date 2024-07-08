@@ -9,6 +9,7 @@ export async function POST(req: Request) {
             status: 400
         }), { status: 400 });
     }
+    console.log("data:", data);
 
     try {
         const names: string[] = [];
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
                 values.push(value);
             }
         });
+        console.log(names, values)
 
         const social = await prisma.social.create({
             data: {
