@@ -4,8 +4,6 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {checkout}  from "./checkout";
-
 
 const items = [
     { name: "Daily Mix 1", image: "/Picture.png", price: "25" },
@@ -20,14 +18,9 @@ const items = [
 ];
 
 const Store: React.FC = () => {
+
     return (
         <>
-        <div className="container">
-            <div id = 'payment'></div>
-            <div id="btn">
-                <button type="submit">Pay Now</button>
-            </div>
-        </div>
         <div className="store-bg pt-10">
             <div className="flex flex-wrap px-11 justify-between mb-40">
                 {items.map((item, index) => (
@@ -45,15 +38,6 @@ const Store: React.FC = () => {
                                 <div>{item.price}</div>
                             </div>
                         </Link>
-                        <button onClick={(() => {
-                            checkout([
-                            {
-                                price: item.price,
-                                quantity: 1,
-                                name: item.name,
-                            }
-                            ])
-                        })}>BUY NOW</button>
                     </div>
                 ))}
             </div>

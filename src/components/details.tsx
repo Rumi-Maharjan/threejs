@@ -9,6 +9,8 @@ import { RxUpload } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import {checkout}  from "./checkout";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const images = [
     { image: "/Picture.png" },
@@ -19,7 +21,7 @@ const images = [
 ];
 
 const items = [
-    { name: "Daily Mix 3", image: "/cat3.jpg", price: "$ 10.00" },
+    { name: "Daily Mix 3", image: "/cat3.jpg", price: "10.00" },
     { name: "Mix", image: "/nordic style candle holder.webp", price: "$ 15.00" },
     { name: "Mix Mix", image: "/Pot and candles.jpg", price: "$ 15.00" },
     { name: "Daily Mix", image: "/slider1.jpg", price: "$ 15.00" },
@@ -32,6 +34,22 @@ const Details: React.FC = () => {
     const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
+    const [showPaypalButtons, setShowPaypalButtons] = useState(false);
+
+    const handleStripePayment = async () => {
+        setShowPaypalButtons(true)
+        try {
+            await checkout([
+                {
+                    price: items[0].price,
+                    quantity: 1,
+                    name: items[0].name,
+                },
+            ]);
+        } catch (error) {
+            console.error('Error during checkout process:', error);
+        }
+    };
 
     useEffect(() => {
         if (imageParam) {
@@ -53,6 +71,48 @@ const Details: React.FC = () => {
 
     const decrementQuantity = () => {
         setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+    };
+
+    const createOrder = async (price: string) => {
+        const response = await fetch('/api/paypal/createOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                intent: 'CAPTURE',
+                purchase_units: [{
+                    amount: {
+                        currency_code: 'USD',
+                        value: price.toString(),  // Ensure price is a string
+                    }
+                }]
+            }),
+        });
+        const data = await response.json();
+        console.log(data,"data")
+        return data.orderID;
+    };
+
+    const captureOrder = async (orderID: string) => {
+        const response = await fetch('/api/paypal/captureOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ orderID }),
+        });
+        const data = await response.json();
+        return data;
+    };
+    if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
+        throw new Error('PayPal client ID must be defined');
+    }
+
+    const initialOptions = {
+        'client-id': process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string,
+        currency: 'USD',
+        intent: 'capture' 
     };
 
     return (
@@ -101,7 +161,7 @@ const Details: React.FC = () => {
 
                 <div className="h-fit pt-10 sticky top-0">
                     <div className="text-5xl w-96 mb-3">Real Good Shit Hoodie</div>
-                    <div>£65.00 GBP</div>
+                    <div>${items[0].price}</div>
                     <div className="my-5">
                         <div className="text-sm">Size</div>
                         <div className="text-sm mb-2"><u>Size Guide</u></div>
@@ -120,8 +180,46 @@ const Details: React.FC = () => {
                             <button onClick={incrementQuantity} className="text-2xl">+</button>
                         </div>
                     </div>
-                    <div className="border border-black box-shadow flex justify-center items-center py-2 rounded-md w-96 mb-2">Add to cart</div>
-                    <div className="flex justify-center items-center py-2 text-white bg-indigo-700 rounded-md w-96 mb-3">Buy with shop</div>
+                    <div className="border border-black box-shadow flex justify-center items-center py-2 rounded-md w-[600px] mb-2">Add to cart</div>
+                    <div className="">
+                        <button 
+                            className="flex justify-center items-center py-2 text-white bg-indigo-700 rounded-md w-[600px] mb-3" 
+                            onClick={handleStripePayment}
+                        >
+                            Pay with Stripe
+                        </button>
+                        {showPaypalButtons && (
+                            <div className="container">
+                                <div id = 'payment'></div>
+                                <div id="btn" className="pb-3">
+                                    <button 
+                                    className="w-[600px] bg-black text-white py-3"
+                                    type="submit">Pay Now</button>
+                                </div>
+                            </div>
+                        )}
+                            
+                            <PayPalScriptProvider options={initialOptions}>
+                                <PayPalButtons
+                                style={{
+                                    color: 'gold',
+                                    shape: 'rect',
+                                    label: 'pay',
+                                    height: 50,
+                                }}
+                                createOrder={async (data, actions) => {
+                                    return createOrder(items[0].price)
+                                }}
+                                onApprove={async (data, actions) => {
+                                    const response = await captureOrder(data.orderID);
+                                    if (response.status === "COMPLETED") {
+                                        alert("Transaction completed!");
+                                    }
+                                }}
+                                />
+                            </PayPalScriptProvider>
+                        </div>
+                    {/* <div className="flex justify-center items-center py-2 text-white bg-indigo-700 rounded-md w-96 mb-3">Buy with shop</div> */}
                     <div className="w-96 text-center text-sm mb-7"><u>More payment options</u></div>
                     <div className="font-sans mb-5 max-w-[550px]">
                         Black hoodie made from GOTS certified 100% organic OEKO-TEX cotton, with Real Good Shit embroidered on the front.

@@ -7,6 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export async function POST(req:Request) {
   const data = await req.json();
+  console.log(data)
   
   try {
     const p = await stripe.paymentIntents.create({

@@ -13,7 +13,7 @@ export async function checkout(lineItems: any[]) {
 
     try 
     {
-        const stripepromise = fetch('api/payment', {
+        const stripepromise = fetch('/api/payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,8 +28,7 @@ export async function checkout(lineItems: any[]) {
         stripe = await loadStripe(process.env.NEXT_PUBLIC_API_KEY as string) as Stripe;
 
         if (!!container) {
-            // Hide the container only after successful API fetch
-            const res = await stripepromise; // Wait for response
+            const res = await stripepromise; 
             if (res.ok) {
                 container.classList.add('hide');
             }

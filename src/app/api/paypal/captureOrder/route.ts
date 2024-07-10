@@ -3,14 +3,15 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/paypal";
 import paypal from "@paypal/checkout-server-sdk"
 
-export default async function handle(req:NextApiRequest, res:NextApiResponse) {
-    const { orderID } = req.body
+export async function POST(req:Request, res:NextApiResponse) {
+    const { orderID } = await req.json()
     const PaypalClient = client()
     const request = new paypal.orders.OrdersCaptureRequest(orderID)
     request.requestBody({})
     const response = await PaypalClient.execute(request)
+    console.log(response)
     if(!response) {
-        res.status(500)
+        return Response.json({ error: "eroor"}, { status: 404 })
     }
     await prisma.payment.updateMany({
         where: {
@@ -20,5 +21,5 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             status : 'PAID'
         }
     })
-    res.json({ ...response.result })
+    return Response.json({ ...response.result })
 }
